@@ -2,8 +2,6 @@ package ir.aotol.app.ui.components.preline.badge
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,17 +13,16 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ir.aotol.app.R
+import ir.aotol.app.helperes.invisibleClickable
 import ir.aotol.app.ui.components.preline.badge.BadgeTheme.Color
 import ir.aotol.app.ui.components.preline.badge.BadgeTheme.Shape
 import ir.aotol.app.ui.components.preline.badge.BadgeTheme.Size
@@ -49,9 +46,7 @@ fun Badge(
     val theme = getTheme(type, color, size, shape)
 
     Card(
-        modifier = modifier
-            .size(width = Dp.Unspecified, height = theme.height)
-            .then(onClick?.let { Modifier.clickable { it() } } ?: Modifier),
+        modifier = modifier.then(onClick?.let { Modifier.invisibleClickable { it() } } ?: Modifier),
         colors = CardDefaults.cardColors(theme.background),
         border = BorderStroke(1.dp, theme.stroke),
         elevation = CardDefaults.cardElevation(0.dp),
@@ -120,7 +115,7 @@ fun Badge(
                 Card(
                     modifier = Modifier
                         .size(theme.closeIconSize)
-                        .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) { it() },
+                        .invisibleClickable { it() },
                     shape = CircleShape,
                     elevation = CardDefaults.cardElevation(0.dp),
                     colors = CardDefaults.cardColors(theme.closeIconBackground),

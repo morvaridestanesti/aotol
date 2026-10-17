@@ -18,7 +18,6 @@ data class BadgeTheme(
     val stroke: ComposeColor,
     val closeIconBackground: ComposeColor,
     val closeIconForegroundColor: ComposeColor,
-    val height: Dp,
     val containerHorizontalPadding: Dp,
     val containerVerticalPadding: Dp,
     val avatarSize: Dp,
@@ -63,7 +62,6 @@ internal fun getTheme(type: Type, color: Color, size: Size, shape: Shape): Badge
     stroke = getStrokeColor(type, color),
     closeIconBackground = getCloseIconBackgroundColor(type, color),
     closeIconForegroundColor = getCloseIconForegroundColor(type, color),
-    height = getHeight(size),
     containerHorizontalPadding = getContainerPadding(size, true),
     containerVerticalPadding = getContainerPadding(size, false),
     avatarSize = getAvatarSize(size),
@@ -268,16 +266,10 @@ private fun getCloseIconForegroundColor(type: Type, color: Color): ComposeColor 
     }
 }
 
-private fun getHeight(size: Size): Dp = when (size) {
-    Size.Large   -> 38.dp
-    Size.Default -> 28.dp
-    Size.Small   -> 18.dp
-}
-
 private fun getContainerPadding(size: Size, horizontal: Boolean): Dp = when (size) {
     Size.Large   -> if (horizontal) 16.dp else 12.dp
-    Size.Default -> if (horizontal) 10.dp else 6.dp
-    Size.Small   -> if (horizontal) 6.dp else 2.dp
+    Size.Default -> if (horizontal) 12.dp else 8.dp
+    Size.Small   -> if (horizontal) 8.dp else 4.dp
 }
 
 private fun getAvatarSize(size: Size): Dp = when (size) {

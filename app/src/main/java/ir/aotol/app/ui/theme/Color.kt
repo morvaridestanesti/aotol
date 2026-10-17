@@ -12,6 +12,7 @@ val Pink40 = Color(0xFF7D5260)
 
 object Colors {
     object Background {
+        val Card = Color(0xFFF9FAFB)
         val Normal = Color(0xFFFFFFFF)
         val Error = Color(0xFFFEF9F9)
         val ErrorDark = Color(0xFFFDF5F5)
