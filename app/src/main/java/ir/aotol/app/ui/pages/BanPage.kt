@@ -25,7 +25,7 @@ import androidx.navigation.compose.rememberNavController
 import ir.aotol.app.R
 import ir.aotol.app.ui.components.preline.button.Button
 import ir.aotol.app.ui.components.preline.button.ButtonTheme
-import ir.aotol.app.ui.theme.AotolTheme
+import ir.aotol.app.ui.components.preline.AotolTheme
 import ir.aotol.app.ui.theme.Colors
 
 @Composable
@@ -79,16 +79,14 @@ fun BanPage(navController: NavController) {
             modifier = Modifier.fillMaxWidth(),
             placeholder = "ارتباط با پشتیبانی",
             leadingIcon = painterResource(R.drawable.ic_support),
-            color = ButtonTheme.Color.Blue,
-            isFilled = true
+            color = ButtonTheme.Color.Blue
         ) { }
         Spacer(Modifier.height(8.dp))
         Button(
             modifier = Modifier.fillMaxWidth(),
             placeholder = "ورود با شماره دیگر",
             style = ButtonTheme.Style.Outlined,
-            color = ButtonTheme.Color.Gray,
-            isFilled = true
+            color = ButtonTheme.Color.Gray
         ) { }
     }
 }

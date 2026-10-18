@@ -1,6 +1,7 @@
 package ir.aotol.app.ui.components.preline.input
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
@@ -33,26 +35,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import ir.aotol.app.R
-import ir.aotol.app.ui.components.preline.Colors
+import ir.aotol.app.helpers.disabledAlpha
 import ir.aotol.app.ui.components.preline.avatar.Avatar
 import ir.aotol.app.ui.components.preline.avatar.AvatarTheme
 import ir.aotol.app.ui.components.preline.badge.Badge
 import ir.aotol.app.ui.components.preline.badge.BadgeTheme
-import ir.aotol.app.ui.components.preline.input.InputTheme.InteractionState
-import ir.aotol.app.ui.components.preline.input.InputTheme.Shape
-import ir.aotol.app.ui.components.preline.input.InputTheme.Size
-import ir.aotol.app.ui.components.preline.input.InputTheme.Type
-import ir.aotol.app.ui.components.preline.input.InputTheme.ValidationState
 import ir.aotol.app.ui.components.preline.input.data.InputContent
 import ir.aotol.app.ui.components.preline.input.data.InputTag
+import ir.aotol.app.ui.components.preline.PrelineTheme
+import ir.aotol.app.ui.components.preline.medium
+import ir.aotol.app.ui.components.preline.semiBold
 
 @Composable
 fun Input(
@@ -72,11 +72,12 @@ fun Input(
     trailingDivider: Boolean = false,
     enabled: Boolean = true,
     singleLine: Boolean = true,
-    validationState: ValidationState = ValidationState.None,
-    size: Size = Size.Default,
-    type: Type = Type.Bordered,
-    shape: Shape = Shape.Rounded,
-    keyboardType: KeyboardType = KeyboardType.Text
+    validationState: InputTheme.ValidationState = InputTheme.ValidationState.None,
+    size: InputTheme.Size = InputTheme.Size.Default,
+    type: InputTheme.Type = InputTheme.Type.Bordered,
+    shape: InputTheme.Shape = InputTheme.Shape.Rounded,
+    keyboardType: KeyboardType = KeyboardType.Text,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
@@ -84,16 +85,16 @@ fun Input(
     val isFilled = value.isNotEmpty()
 
     val interactionState = when {
-        !enabled -> InteractionState.Disabled
-        isFocused && isFilled -> InteractionState.FocusFilled
-        isFocused -> InteractionState.Focus
-        isHovered -> InteractionState.Hover
-        else -> InteractionState.Default
+        !enabled -> InputTheme.InteractionState.Disabled
+        isFocused && isFilled -> InputTheme.InteractionState.FocusFilled
+        isFocused -> InputTheme.InteractionState.Focus
+        isHovered -> InputTheme.InteractionState.Hover
+        else -> InputTheme.InteractionState.Default
     }
 
     val theme = getTheme(type, interactionState, validationState, size, shape)
 
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(modifier = modifier.fillMaxWidth().disabledAlpha(!enabled)) {
         label?.let { labelText ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -102,16 +103,14 @@ fun Input(
                 Text(
                     text = labelText,
                     color = theme.labelColor,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.SemiBold
+                    style = PrelineTheme.typography.sm.semiBold,
                 )
                 Spacer(Modifier.weight(1f))
                 secondaryLabel?.let { secondaryLabelText ->
                     Text(
                         text = secondaryLabelText,
                         color = theme.secondaryLabelColor,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.SemiBold
+                        style = PrelineTheme.typography.sm,
                     )
                 }
             }
@@ -120,9 +119,9 @@ fun Input(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(theme.containerHeight),
+                .then(if (singleLine) Modifier.height(theme.containerHeight) else Modifier.heightIn(min = theme.containerHeight * 2)),
             colors = CardDefaults.cardColors(containerColor = theme.backgroundColor),
-            border = if (type == Type.Underline) null else BorderStroke(theme.borderWidth, theme.borderColor),
+            border = if (type == InputTheme.Type.Underline) null else BorderStroke(theme.borderWidth, theme.borderColor),
             elevation = CardDefaults.cardElevation(0.dp),
             shape = theme.shape
         ) {
@@ -130,7 +129,7 @@ fun Input(
                 modifier = Modifier
                     .fillMaxSize()
                     .let {
-                        if (type == Type.Underline) {
+                        if (type == InputTheme.Type.Underline) {
                             it.drawBehind {
                                 val strokeWidthPx = theme.borderWidth.toPx()
                                 val offsetY = this.size.height - strokeWidthPx / 2
@@ -145,11 +144,11 @@ fun Input(
                             it
                         }
                     }
-                    .padding(horizontal = theme.containerPadding),
-                verticalAlignment = Alignment.CenterVertically,
+                    .padding(horizontal = theme.containerPadding, vertical = if (singleLine) 0.dp else theme.containerPadding),
+                verticalAlignment = if (singleLine) Alignment.CenterVertically else Alignment.Top,
                 horizontalArrangement = Arrangement.spacedBy(theme.contentSpacing)
             ) {
-                leadingContent?.let { InputContentSlot(it, theme) }
+                leadingContent?.let { InputContentSlot(it, size, theme) }
                 if (leadingDivider) InputDivider()
                 Row(
                     modifier = Modifier.weight(1f),
@@ -161,8 +160,10 @@ fun Input(
                         if (value.isEmpty() && placeholder != null) {
                             Text(
                                 text = placeholder,
-                                fontSize = theme.textSize,
-                                color = theme.placeholderColor
+                                style = theme.textStyle,
+                                color = theme.placeholderColor,
+                                maxLines = if (singleLine) 1 else Int.MAX_VALUE,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
                         BasicTextField(
@@ -171,10 +172,8 @@ fun Input(
                             enabled = enabled,
                             singleLine = singleLine,
                             interactionSource = interactionSource,
-                            textStyle = TextStyle(
-                                fontSize = theme.textSize,
-                                color = theme.textColor
-                            ),
+                            textStyle = theme.textStyle.copy(color = theme.textColor),
+                            visualTransformation = visualTransformation,
                             keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = ImeAction.Done),
                             keyboardActions = KeyboardActions(onDone = {
                                 if (isTagMode) {
@@ -186,17 +185,21 @@ fun Input(
                         )
                     }
                 }
+                validationIcon(validationState)?.let {
+                    Icon(painter = painterResource(it), contentDescription = null, modifier = Modifier.size(theme.iconSize), tint = theme.feedbackTextColor)
+                }
                 if (trailingDivider) InputDivider()
-                trailingContent?.let { InputContentSlot(it, theme) }
+                trailingContent?.let { InputContentSlot(it, size, theme) }
             }
         }
-        feedbackMessage?.let { InputFeedbackMessage(message = it, inputTheme = theme) }
+        feedbackMessage?.let { InputFeedbackMessage(message = it, theme = theme) }
     }
 }
 
 @Composable
-internal fun InputContentSlot(content: InputContent, inputTheme: InputTheme) {
+internal fun InputContentSlot(content: InputContent, size: InputTheme.Size, theme: InputTheme) {
     Row(
+        modifier = content.onClick?.let { Modifier.clickable(role = Role.Button, onClick = it) } ?: Modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
@@ -204,8 +207,8 @@ internal fun InputContentSlot(content: InputContent, inputTheme: InputTheme) {
             Icon(
                 painter = it,
                 contentDescription = null,
-                modifier = Modifier.size(inputTheme.iconSize),
-                tint = inputTheme.placeholderColor
+                modifier = Modifier.size(theme.iconSize),
+                tint = theme.placeholderColor
             )
         }
         content.avatarUrl?.let {
@@ -222,17 +225,16 @@ internal fun InputContentSlot(content: InputContent, inputTheme: InputTheme) {
         content.text?.let {
             Text(
                 text = it,
-                color = inputTheme.placeholderColor,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium
+                color = theme.placeholderColor,
+                style = PrelineTheme.typography.sm.medium,
             )
         }
         content.iconEnd?.let {
             Icon(
                 painter = it,
                 contentDescription = null,
-                modifier = Modifier.size(inputTheme.iconSize),
-                tint = inputTheme.placeholderColor
+                modifier = Modifier.size(theme.iconSize),
+                tint = theme.placeholderColor
             )
         }
     }
@@ -243,7 +245,7 @@ internal fun InputDivider() {
     VerticalDivider(
         modifier = Modifier.fillMaxHeight(),
         thickness = 1.dp,
-        color = Colors.Theme.Layer.LayerBorder
+        color = PrelineTheme.colors.layerBorder
     )
 }
 
@@ -251,6 +253,7 @@ internal fun InputDivider() {
 internal fun InputTagChip(tag: InputTag) {
     Badge(
         placeholder = tag.title,
+        avatar = tag.avatar,
         onCloseClick = { tag.onRemove?.invoke(tag) },
         type = BadgeTheme.Type.White,
         color = BadgeTheme.Color.White,
@@ -259,11 +262,11 @@ internal fun InputTagChip(tag: InputTag) {
 }
 
 @Composable
-internal fun InputFeedbackMessage(message: String, inputTheme: InputTheme) {
+internal fun InputFeedbackMessage(message: String, theme: InputTheme) {
     Text(
         text = message,
-        fontSize = inputTheme.textSize,
-        color = inputTheme.feedbackTextColor,
+        style = PrelineTheme.typography.xs,
+        color = theme.feedbackTextColor,
         modifier = Modifier.padding(top = 4.dp)
     )
 }
@@ -287,15 +290,15 @@ private fun Basic() {
                 label = "Email",
                 placeholder = "you@email.com",
                 leadingContent = InputContent(
-                    iconStart = painterResource(R.drawable.aotol),
-                    avatarPainter = painterResource(R.drawable.aotol),
+                    iconStart = painterResource(R.drawable.ic_info),
+                    avatarPainter = painterResource(R.drawable.avatar_google),
                     text = "Email",
-                    iconEnd = painterResource(R.drawable.aotol)
+                    iconEnd = painterResource(R.drawable.ic_chevron_down)
                 ),
                 leadingDivider = true,
                 trailingDivider = true,
                 trailingContent = InputContent(
-                    iconEnd = painterResource(R.drawable.aotol)
+                    iconEnd = painterResource(R.drawable.ic_info)
                 ),
                 keyboardType = KeyboardType.Email
             )
@@ -354,19 +357,19 @@ private fun Sizes() {
                 value = smallVal.value,
                 onValueChange = { smallVal.value = it },
                 placeholder = "Input-sm",
-                size = Size.Small
+                size = InputTheme.Size.Small
             )
             Input(
                 value = defaultVal.value,
                 onValueChange = { defaultVal.value = it },
                 placeholder = "Input",
-                size = Size.Default
+                size = InputTheme.Size.Default
             )
             Input(
                 value = largeVal.value,
                 onValueChange = { largeVal.value = it },
                 placeholder = "Input-lg",
-                size = Size.Large
+                size = InputTheme.Size.Large
             )
         }
     }
@@ -391,22 +394,22 @@ private fun Types() {
                 value = v1.value,
                 onValueChange = { v1.value = it },
                 label = "Bordered",
-                type = Type.Bordered,
-                shape = Shape.Rounded
+                type = InputTheme.Type.Bordered,
+                shape = InputTheme.Shape.Rounded
             )
             Input(
                 value = v2.value,
                 onValueChange = { v2.value = it },
                 label = "Underline",
-                type = Type.Underline,
-                shape = Shape.None
+                type = InputTheme.Type.Underline,
+                shape = InputTheme.Shape.None
             )
             Input(
                 value = v3.value,
                 onValueChange = { v3.value = it },
-                label = "Gray (Light)",
-                type = Type.Gray,
-                shape = Shape.Rounded
+                label = "Light",
+                type = InputTheme.Type.Light,
+                shape = InputTheme.Shape.Rounded
             )
         }
     }
@@ -430,13 +433,13 @@ private fun Shapes() {
                 value = v1.value,
                 onValueChange = { v1.value = it },
                 placeholder = "Rounded (Default)",
-                shape = Shape.Rounded
+                shape = InputTheme.Shape.Rounded
             )
             Input(
                 value = v2.value,
                 onValueChange = { v2.value = it },
                 placeholder = "Pilled",
-                shape = Shape.Pilled
+                shape = InputTheme.Shape.Pilled
             )
         }
     }
@@ -460,14 +463,14 @@ private fun States() {
                 value = invalidVal.value,
                 onValueChange = { invalidVal.value = it },
                 label = "Invalid",
-                validationState = ValidationState.Invalid,
+                validationState = InputTheme.ValidationState.Invalid,
                 feedbackMessage = "Please enter a valid email address."
             )
             Input(
                 value = successVal.value,
                 onValueChange = { successVal.value = it },
                 label = "Success",
-                validationState = ValidationState.Success,
+                validationState = InputTheme.ValidationState.Success,
                 feedbackMessage = "Looks good!"
             )
         }
@@ -519,9 +522,15 @@ private fun Tags() {
                 label = "Tags",
                 tags = tags.value,
                 isTagMode = true,
-                onNewTag = { tags.value + InputTag(title = it, onRemove = { tag -> tags.value = tags.value.filter { currentTag -> currentTag != tag } }) },
+                onNewTag = { tags.value += InputTag(title = it, onRemove = { tag -> tags.value = tags.value.filter { currentTag -> currentTag != tag } }) },
                 placeholder = "Add people"
             )
         }
     }
+}
+
+private fun validationIcon(state: InputTheme.ValidationState): Int? = when (state) {
+    InputTheme.ValidationState.Invalid -> R.drawable.ic_info
+    InputTheme.ValidationState.Success -> R.drawable.ic_check
+    InputTheme.ValidationState.None    -> null
 }

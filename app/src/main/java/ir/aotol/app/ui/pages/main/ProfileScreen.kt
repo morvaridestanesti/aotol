@@ -30,14 +30,16 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ir.aotol.app.R
 import ir.aotol.app.ui.components.page_title.PageTitle
+import ir.aotol.app.ui.components.preline.AotolTheme
 import ir.aotol.app.ui.components.preline.accordion.Accordion
+import ir.aotol.app.ui.components.preline.accordion.AccordionTheme
+import ir.aotol.app.ui.components.preline.accordion.data.AccordionItem
 import ir.aotol.app.ui.components.preline.avatar.Avatar
 import ir.aotol.app.ui.components.preline.avatar.AvatarTheme
 import ir.aotol.app.ui.components.preline.badge.Badge
 import ir.aotol.app.ui.components.preline.badge.BadgeTheme
 import ir.aotol.app.ui.components.preline.button.Button
 import ir.aotol.app.ui.components.preline.button.ButtonTheme
-import ir.aotol.app.ui.theme.AotolTheme
 import ir.aotol.app.ui.theme.Colors
 
 @Composable
@@ -177,7 +179,15 @@ fun ProfileScreen(navController: NavController) {
                 }
             }
             Accordion(
-                items = listOf()
+                items = listOf(
+                    AccordionItem(title = "آدرس های من", icon = painterResource(R.drawable.ic_location)) {},
+                    AccordionItem(title = "تغییر شماره موبایل", icon = painterResource(R.drawable.ic_change)) {},
+                    AccordionItem(title = "قوانین و حریم خصوصی", icon = painterResource(R.drawable.ic_rules)) {},
+                    AccordionItem(title = "پشتیبانی", icon = painterResource(R.drawable.ic_support)) {},
+                ),
+                style = AccordionTheme.Style.Bordered,
+                toggle = AccordionTheme.Toggle.EndArrow,
+                type = AccordionTheme.Type.Basic,
             )
         }
         Spacer(Modifier.weight(1f))
@@ -188,15 +198,11 @@ fun ProfileScreen(navController: NavController) {
             placeholder = "خروج از حساب کاربری",
             leadingIcon = painterResource(R.drawable.ic_logout),
             color = ButtonTheme.Color.Red,
-            style = ButtonTheme.Style.Soft,
-            isFilled = true
+            style = ButtonTheme.Style.Soft
         ) { }
-        HorizontalDivider(thickness = 1.dp, color = Colors.Foreground.Normal)
     }
 }
 
 @Preview(showBackground = true, apiLevel = 36, showSystemUi = true)
 @Composable
-private fun Preview() {
-    AotolTheme { ProfileScreen(rememberNavController()) }
-}
+private fun Preview() = AotolTheme { ProfileScreen(rememberNavController()) }

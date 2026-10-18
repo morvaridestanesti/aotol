@@ -17,19 +17,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ir.aotol.app.R
-import ir.aotol.app.ui.components.preline.styled_icon.StyledIconTheme.Color
-import ir.aotol.app.ui.components.preline.styled_icon.StyledIconTheme.Shape
-import ir.aotol.app.ui.components.preline.styled_icon.StyledIconTheme.Size
-import ir.aotol.app.ui.components.preline.styled_icon.StyledIconTheme.Type
 
 @Composable
 fun StyledIcon(
     icon: Painter,
     modifier: Modifier = Modifier,
-    type: Type = Type.Solid,
-    color: Color = Color.Dark,
-    size: Size = Size.Default,
-    shape: Shape = Shape.Rounded,
+    type: StyledIconTheme.Type = StyledIconTheme.Type.Solid,
+    color: StyledIconTheme.Color = StyledIconTheme.Color.Dark,
+    size: StyledIconTheme.Size = StyledIconTheme.Size.Default,
+    shape: StyledIconTheme.Shape = StyledIconTheme.Shape.Rounded,
     onClick: (() -> Unit)? = null
 ) {
     val theme = getTheme(type, color, size, shape)
@@ -73,9 +69,9 @@ private fun StyledIconPreview() {
     StyledIcon(
         icon = painterResource(R.drawable.ic_check),
         modifier = Modifier,
-        type = Type.SoftOutlined,
-        color = Color.Green,
-        size = Size.Default,
-        shape = Shape.Circular
+        type = StyledIconTheme.Type.SoftOutlined,
+        color = StyledIconTheme.Color.Green,
+        size = StyledIconTheme.Size.Default,
+        shape = StyledIconTheme.Shape.Circular
     ) {}
 }

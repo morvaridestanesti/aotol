@@ -9,8 +9,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ir.aotol.app.R
+import ir.aotol.app.ui.components.preline.AotolTheme
 import ir.aotol.app.ui.components.preline.alert.Alert
 import ir.aotol.app.ui.components.preline.alert.AlertTheme
 import ir.aotol.app.ui.components.preline.alert.data.AlertButton
@@ -34,12 +40,11 @@ import ir.aotol.app.ui.components.preline.avatar.Avatar
 import ir.aotol.app.ui.components.preline.avatar.AvatarTheme
 import ir.aotol.app.ui.components.preline.button.Button
 import ir.aotol.app.ui.components.preline.button.ButtonTheme
-import ir.aotol.app.ui.components.preline.checkbox.CheckBoxTheme
 import ir.aotol.app.ui.components.preline.checkbox.Checkbox
+import ir.aotol.app.ui.components.preline.checkbox.CheckboxTheme
 import ir.aotol.app.ui.components.preline.input.Input
 import ir.aotol.app.ui.components.preline.input.InputTheme
 import ir.aotol.app.ui.components.preline.input.data.InputContent
-import ir.aotol.app.ui.theme.AotolTheme
 import ir.aotol.app.ui.theme.Colors
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,7 +59,6 @@ fun LoginPage(navController: NavController) {
         ) {
             Avatar(
                 imagePainter = painterResource(R.drawable.aotol),
-                internalPadding = 8.dp,
                 color = AvatarTheme.Color.Blue,
                 shape = AvatarTheme.Shape.Rounded,
                 size = AvatarTheme.Size.Large,
@@ -107,10 +111,9 @@ fun LoginPage(navController: NavController) {
             Spacer(Modifier.weight(1f))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Checkbox(
-                    label = null,
-                    type = CheckBoxTheme.Type.Solid,
-                    size = CheckBoxTheme.Size.Large,
-                    isFilled = false,
+                    label = "",
+                    type = CheckboxTheme.Type.Solid,
+                    size = CheckboxTheme.Size.Large,
                     checked = isRulesAccepted.value,
                     onCheckedChange = { isRulesAccepted.value = !isRulesAccepted.value }
                 )
@@ -135,7 +138,6 @@ fun LoginPage(navController: NavController) {
                 modifier = Modifier.fillMaxWidth(),
                 color = if (isRulesAccepted.value) ButtonTheme.Color.Blue else ButtonTheme.Color.Gray,
                 state = if (isRulesAccepted.value) ButtonTheme.State.Default else ButtonTheme.State.Disabled,
-                isFilled = true,
             ) {
                 if (!isRulesAccepted.value) {
                     bottomSheetState.value = true
@@ -151,7 +153,58 @@ fun LoginPage(navController: NavController) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-
+                    Card(
+                        modifier = Modifier.size(96.dp),
+                        colors = CardDefaults.cardColors(Colors.Background.Warning),
+                        elevation = CardDefaults.cardElevation(0.dp),
+                        shape = CircleShape
+                    ) {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp),
+                            colors = CardDefaults.cardColors(Colors.Background.WarningDark),
+                            elevation = CardDefaults.cardElevation(0.dp),
+                            shape = CircleShape
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_ban),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(16.dp),
+                                tint = Colors.Foreground.Warning
+                            )
+                        }
+                    }
+                    Text(
+                        text = "امکان ادامه وجود ندارد",
+                        color = Colors.Text.Title,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text(
+                        text = "بدون پذیرش قوانین امکان استفاده از اپلیکیشن وجود ندارد.",
+                        color = Colors.Text.Label,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Normal,
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Button(
+                            modifier = Modifier.weight(1f),
+                            placeholder = "خروج",
+                            color = ButtonTheme.Color.Blue
+                        ) { }
+                        Button(
+                            modifier = Modifier.weight(1f),
+                            placeholder = "بازگشت",
+                            style = ButtonTheme.Style.Outlined,
+                            color = ButtonTheme.Color.Gray
+                        ) { }
+                    }
                 }
             }
         }

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -29,7 +27,6 @@ import ir.aotol.app.R
 import ir.aotol.app.ui.components.preline.button.Button
 import ir.aotol.app.ui.components.preline.button.ButtonTheme
 import ir.aotol.app.ui.components.preline.card.data.CardButton
-import androidx.compose.ui.graphics.Color as ComposeColor
 
 @Composable
 fun Card(
@@ -47,25 +44,20 @@ fun Card(
     val theme = getTheme()
 
     Card(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier,
         colors = CardDefaults.cardColors(theme.cardBackground),
         border = BorderStroke(1.dp, theme.cardBorder),
         elevation = CardDefaults.cardElevation(0.dp),
         shape = theme.shape
     ) {
-        Column(
-            modifier = modifier
-                .fillMaxWidth()
-                .background(ComposeColor.White)
-        ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
             headerTitle?.let {
                 Text(
                     text = it,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = theme.padding, vertical = 20.dp),
-                    fontSize = theme.headerTitleFontSize,
-                    fontWeight = FontWeight.SemiBold,
+                    style = theme.headerTitleStyle,
                     color = theme.headerTitleColor
                 )
             }
@@ -96,16 +88,14 @@ fun Card(
                 Text(
                     text = titleText,
                     color = theme.titleColor,
-                    fontSize = theme.titleFontSize,
-                    fontWeight = FontWeight.SemiBold
+                    style = theme.titleStyle,
                 )
                 subtitle?.let { subtitleText ->
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = subtitleText,
                         color = theme.subtitleColor,
-                        fontSize = theme.subtitleFontSize,
-                        fontWeight = FontWeight.SemiBold
+                        style = theme.subtitleStyle,
                     )
                 }
             }
@@ -114,8 +104,7 @@ fun Card(
                 Text(
                     text = contentText,
                     color = theme.contentColor,
-                    fontSize = theme.contentFontSize,
-                    fontWeight = FontWeight.Medium
+                    style = theme.contentStyle,
                 )
             }
             if (button1 != null || button2 != null) {
@@ -150,8 +139,7 @@ fun Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = theme.padding, vertical = 20.dp),
-                    fontSize = theme.footerFontSize,
-                    fontWeight = FontWeight.Medium,
+                    style = theme.footerStyle,
                     color = theme.footerTextColor
                 )
             }

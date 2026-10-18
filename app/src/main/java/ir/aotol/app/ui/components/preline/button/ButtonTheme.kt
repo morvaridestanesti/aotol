@@ -1,29 +1,33 @@
 package ir.aotol.app.ui.components.preline.button
 
-import ir.aotol.app.ui.components.preline.Colors
-import ir.aotol.app.ui.components.preline.button.ButtonTheme.Color
-import ir.aotol.app.ui.components.preline.button.ButtonTheme.State
-import ir.aotol.app.ui.components.preline.button.ButtonTheme.Style
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color as ComposeColor
+import androidx.compose.ui.graphics.Shape as ComposeShape
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import ir.aotol.app.ui.components.preline.AccentColors
+import ir.aotol.app.ui.components.preline.Palette
+import ir.aotol.app.ui.components.preline.PrelineColors
+import ir.aotol.app.ui.components.preline.PrelineTheme
 
 data class ButtonTheme(
     val background: ComposeColor,
     val foreground: ComposeColor,
     val stroke: ComposeColor,
+    val horizontalPadding: Dp,
+    val verticalPadding: Dp,
+    val shape: ComposeShape,
 ) {
     sealed interface Color {
         object Dark : Color
-
         object Gray : Color
-
         object Green : Color
-
         object Blue : Color
-
         object Red : Color
-
         object Yellow : Color
-
         object Light : Color
     }
 
@@ -40,6 +44,11 @@ data class ButtonTheme(
         object Hover : State
     }
 
+    sealed interface Shape {
+        object Rounded : Shape
+        object Pilled : Shape
+    }
+
     sealed interface Style {
         object Ghost : Style
         object Outlined : Style
@@ -50,1108 +59,159 @@ data class ButtonTheme(
     }
 }
 
-internal fun getTheme(style: Style, color: Color, state: State): ButtonTheme = when (style) {
-    Style.Ghost    -> when (color) {
-        Color.Dark   -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Foreground.Foreground,
-                Colors.Transparent
-            )
+@Composable
+@ReadOnlyComposable
+internal fun getTheme(style: ButtonTheme.Style, color: ButtonTheme.Color, state: ButtonTheme.State, size: ButtonTheme.Size, shape: ButtonTheme.Shape): ButtonTheme {
+    val colors = PrelineTheme.colors
+    val visualState = if (state == ButtonTheme.State.Disabled) ButtonTheme.State.Default else state
+    return ButtonTheme(
+        background = colors.getBackgroundColor(style, color, visualState),
+        foreground = colors.getForegroundColor(style, color, visualState),
+        stroke = colors.getStrokeColor(style, color, visualState),
+        horizontalPadding = getHorizontalPadding(size),
+        verticalPadding = getVerticalPadding(size),
+        shape = if (shape == ButtonTheme.Shape.Pilled) CircleShape else RoundedCornerShape(8.dp)
+    )
+}
 
-            State.Disabled -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Foreground.ForegroundDisabled,
-                Colors.Transparent
-            )
+private fun PrelineColors.accent(color: ButtonTheme.Color): AccentColors? = when (color) {
+    ButtonTheme.Color.Green  -> green
+    ButtonTheme.Color.Blue   -> blue
+    ButtonTheme.Color.Red    -> red
+    ButtonTheme.Color.Yellow -> yellow
+    else                     -> null
+}
 
-            State.Focus    -> ButtonTheme(
-                Colors.Theme.Muted.MutedFocus,
-                Colors.Theme.Foreground.Foreground,
-                Colors.Theme.Border.BorderTransparent
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Theme.Muted.MutedHover,
-                Colors.Theme.Foreground.Foreground,
-                Colors.Transparent
-            )
+private fun PrelineColors.getBackgroundColor(style: ButtonTheme.Style, color: ButtonTheme.Color, state: ButtonTheme.State): ComposeColor {
+    val accent = accent(color)
+    val idle = state == ButtonTheme.State.Default
+    return when (style) {
+        ButtonTheme.Style.Ghost    -> when {
+            idle                             -> Palette.Transparent
+            accent != null                   -> accent.soft
+            color == ButtonTheme.Color.Light -> Palette.White10
+            state == ButtonTheme.State.Focus -> mutedFocus
+            else                             -> mutedHover
         }
 
-        Color.Gray   -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Muted.MutedForeground1,
-                Colors.Transparent
-            )
+        ButtonTheme.Style.Outlined,
+        ButtonTheme.Style.Link     -> if (state == ButtonTheme.State.Focus) Palette.White1 else Palette.Transparent
 
-            State.Disabled -> ButtonTheme(
-                Colors.Theme.Muted.MutedFocus,
-                Colors.Theme.Muted.MutedForeground1Disabled,
-                Colors.Transparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.Theme.Muted.MutedFocus,
-                Colors.Theme.Muted.MutedForeground1,
-                Colors.Theme.Border.BorderTransparent
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Theme.Muted.MutedHover,
-                Colors.Theme.Muted.MutedForeground1,
-                Colors.Transparent
-            )
+        ButtonTheme.Style.Soft     -> when {
+            accent != null                   -> if (idle) accent.soft else accent.softHover
+            color == ButtonTheme.Color.Light -> if (idle) Palette.White10 else Palette.White20
+            state == ButtonTheme.State.Focus -> surfaceFocus
+            state == ButtonTheme.State.Hover -> surfaceHover
+            else                             -> surface
         }
 
-        Color.Green  -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Teal.Teal500,
-                Colors.Transparent
-            )
+        ButtonTheme.Style.Solid    -> when (color) {
+            ButtonTheme.Color.Dark  -> when (state) {
+                ButtonTheme.State.Focus -> secondaryFocus
+                ButtonTheme.State.Hover -> secondaryHover
+                else                    -> secondary
+            }
 
-            State.Disabled -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Teal.Teal500DisabledButton,
-                Colors.Transparent
-            )
+            ButtonTheme.Color.Gray -> if (idle) surface4 else surface5
+            ButtonTheme.Color.Blue -> when (state) {
+                ButtonTheme.State.Focus -> primaryFocus
+                ButtonTheme.State.Hover -> primaryHover
+                else                    -> primary
+            }
 
-            State.Focus    -> ButtonTheme(
-                Colors.Theme.Accent.Green.Green3,
-                Colors.Theme.Accent.Green.Green7,
-                Colors.Ghost.GreenFocusBorder
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Theme.Accent.Green.Green3,
-                Colors.Theme.Accent.Green.Green7,
-                Colors.Transparent
-            )
+            ButtonTheme.Color.Light -> if (idle) Palette.White else Palette.White90
+            else                    -> if (idle) accent!!.solid else accent!!.solidHover
         }
 
-        Color.Blue   -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Default.Primary,
-                Colors.Transparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Default.PrimaryDisabled,
-                Colors.Transparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.Theme.Accent.Primary.Primary3,
-                Colors.Theme.Accent.Primary.Primary7,
-                Colors.Ghost.BlueFocusBorder
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Theme.Accent.Primary.Primary3,
-                Colors.Theme.Accent.Primary.Primary7,
-                Colors.Transparent
-            )
-        }
-
-        Color.Red    -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Red.Red500,
-                Colors.Transparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Red.Red500Disabled,
-                Colors.Transparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.Theme.Accent.Red.Red3,
-                Colors.Theme.Accent.Red.Red7,
-                Colors.Ghost.RedFocusBorder
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Theme.Accent.Red.Red3,
-                Colors.Theme.Accent.Red.Red7,
-                Colors.Transparent
-            )
-        }
-
-        Color.Yellow -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Yellow.Yellow500,
-                Colors.Transparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Yellow.Yellow500Disabled,
-                Colors.Transparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.Theme.Accent.Yellow.Yellow3,
-                Colors.Theme.Accent.Yellow.Yellow7,
-                Colors.Ghost.YellowFocusBorder
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Theme.Accent.Yellow.Yellow3,
-                Colors.Theme.Accent.Yellow.Yellow7,
-                Colors.Transparent
-            )
-        }
-
-        Color.Light  -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Foreground.ForegroundInverse,
-                Colors.Transparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Foreground.ForegroundInverseDisabled,
-                Colors.Transparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.White.White10,
-                Colors.Theme.Foreground.ForegroundInverse,
-                Colors.WhiteColor
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.White.White10,
-                Colors.Theme.Foreground.ForegroundInverse,
-                Colors.Transparent
-            )
+        ButtonTheme.Style.White    -> when {
+            idle                             -> layer
+            color == ButtonTheme.Color.Light -> Palette.White90
+            state == ButtonTheme.State.Focus -> layerFocus
+            else                             -> layerHover
         }
     }
+}
 
-    Style.Outlined -> when (color) {
-        Color.Dark   -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Foreground.Foreground,
-                Colors.Theme.Border.Border8
-            )
+private fun PrelineColors.getForegroundColor(style: ButtonTheme.Style, color: ButtonTheme.Color, state: ButtonTheme.State): ComposeColor {
+    val accent = accent(color)
+    val idle = state == ButtonTheme.State.Default
+    return when (style) {
+        ButtonTheme.Style.Ghost    -> if (!idle && accent != null) accent.softForeground else getDefaultForeground(color)
 
-            State.Disabled -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Foreground.ForegroundDisabled,
-                Colors.Theme.Border.Border8Disabled
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.White.White1,
-                Colors.Theme.Default.PrimaryFocus,
-                Colors.Theme.Default.PrimaryFocus
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Default.PrimaryHover,
-                Colors.Theme.Default.PrimaryHover
-            )
+        ButtonTheme.Style.Outlined -> when {
+            idle                             -> getDefaultForeground(color)
+            color == ButtonTheme.Color.Dark  -> if (state == ButtonTheme.State.Focus) primaryFocus else primaryHover
+            color == ButtonTheme.Color.Gray  -> foreground
+            color == ButtonTheme.Color.Light -> Palette.White70
+            else                             -> accent!!.outlineHover
         }
 
-        Color.Gray   -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Muted.MutedForeground1,
-                Colors.Theme.Border.Border5
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Muted.MutedForeground1Disabled,
-                Colors.Theme.Border.Border5Disabled
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.White.White1,
-                Colors.Theme.Foreground.Foreground,
-                Colors.Theme.Border.Border8
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Foreground.Foreground,
-                Colors.Theme.Border.Border8
-            )
+        ButtonTheme.Style.Soft     -> when (color) {
+            ButtonTheme.Color.Dark  -> surfaceForeground
+            ButtonTheme.Color.Gray  -> mutedForeground1
+            ButtonTheme.Color.Light -> Palette.White
+            else                    -> accent!!.softForeground
         }
 
-        Color.Green  -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Teal.Teal500,
-                Colors.Teal.Teal500
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Teal.Teal500DisabledButton,
-                Colors.Teal.Teal500DisabledButton
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.White.White1,
-                Colors.Teal.Teal400,
-                Colors.Teal.Teal400
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Teal.Teal400,
-                Colors.Teal.Teal400
-            )
+        ButtonTheme.Style.Solid    -> when (color) {
+            ButtonTheme.Color.Dark  -> secondaryForeground
+            ButtonTheme.Color.Blue  -> primaryForeground
+            ButtonTheme.Color.Light -> Palette.Gray.Gray800
+            else                    -> Palette.White
         }
 
-        Color.Blue   -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Default.Primary,
-                Colors.Theme.Default.Primary
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Default.PrimaryDisabled,
-                Colors.Theme.Default.PrimaryDisabled
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.White.White1,
-                Colors.Theme.Default.PrimaryFocus,
-                Colors.Theme.Default.PrimaryFocus
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Default.PrimaryHover,
-                Colors.Theme.Default.PrimaryHover
-            )
+        ButtonTheme.Style.Link     -> when {
+            idle                             -> getDefaultForeground(color)
+            color == ButtonTheme.Color.Light -> Palette.White
+            color == ButtonTheme.Color.Gray  -> primaryFocus
+            color == ButtonTheme.Color.Dark  -> if (state == ButtonTheme.State.Focus) primaryFocus else primaryHover
+            else                             -> accent!!.solidHover
         }
 
-        Color.Red    -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Red.Red500,
-                Colors.Red.Red500
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Red.Red500Disabled,
-                Colors.Red.Red500Disabled
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.White.White1,
-                Colors.Red.Red400,
-                Colors.Red.Red400
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Red.Red400,
-                Colors.Red.Red400
-            )
-        }
-
-        Color.Yellow -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Yellow.Yellow500,
-                Colors.Yellow.Yellow500
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Yellow.Yellow500Disabled,
-                Colors.Yellow.Yellow500Disabled
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.White.White1,
-                Colors.Yellow.Yellow400,
-                Colors.Yellow.Yellow400
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Yellow.Yellow400,
-                Colors.Yellow.Yellow400
-            )
-        }
-
-        Color.Light  -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Foreground.ForegroundInverse,
-                Colors.Theme.Border.BorderInverse
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Foreground.ForegroundInverseDisabled,
-                Colors.Theme.Border.BorderInverseDisabled
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.White.White1,
-                Colors.White.White70,
-                Colors.Theme.Border.BorderInverse
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Transparent,
-                Colors.White.White70,
-                Colors.Theme.Border.BorderInverse
-            )
+        ButtonTheme.Style.White    -> when (color) {
+            ButtonTheme.Color.Dark  -> layerForeground
+            ButtonTheme.Color.Light -> Palette.Gray.Gray800
+            else                    -> getDefaultForeground(color)
         }
     }
+}
 
-    Style.Soft     -> when (color) {
-        Color.Dark   -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Theme.Surface.Surface,
-                Colors.Theme.Surface.SurfaceForeground,
-                Colors.Transparent
-            )
+private fun PrelineColors.getDefaultForeground(color: ButtonTheme.Color): ComposeColor = when (color) {
+    ButtonTheme.Color.Dark  -> foreground
+    ButtonTheme.Color.Gray  -> mutedForeground1
+    ButtonTheme.Color.Light -> Palette.White
+    else                    -> accent(color)!!.solid
+}
 
-            State.Disabled -> ButtonTheme(
-                Colors.Theme.Surface.SurfaceDisabledButton,
-                Colors.Theme.Surface.SurfaceForegroundDisabled,
-                Colors.Transparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.Theme.Surface.SurfaceFocus,
-                Colors.Theme.Surface.SurfaceForeground,
-                Colors.Transparent
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Theme.Surface.SurfaceHover,
-                Colors.Theme.Surface.SurfaceForeground,
-                Colors.Transparent
-            )
+private fun PrelineColors.getStrokeColor(style: ButtonTheme.Style, color: ButtonTheme.Color, state: ButtonTheme.State): ComposeColor {
+    val accent = accent(color)
+    return when (style) {
+        ButtonTheme.Style.Outlined -> when (color) {
+            ButtonTheme.Color.Dark  -> if (state == ButtonTheme.State.Default) borderLine8 else getForegroundColor(style, color, state)
+            ButtonTheme.Color.Gray  -> if (state == ButtonTheme.State.Default) borderLine5 else borderLine8
+            ButtonTheme.Color.Light -> Palette.White
+            else                    -> getForegroundColor(style, color, state)
         }
 
-        Color.Gray   -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Theme.Surface.Surface,
-                Colors.Theme.Muted.MutedForeground1,
-                Colors.Transparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Theme.Surface.SurfaceDisabledButton,
-                Colors.Theme.Muted.MutedForeground1Disabled,
-                Colors.Transparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.Theme.Surface.SurfaceFocus,
-                Colors.Theme.Muted.MutedForeground1,
-                Colors.Transparent
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Theme.Surface.SurfaceHover,
-                Colors.Theme.Muted.MutedForeground1,
-                Colors.Transparent
-            )
-        }
-
-        Color.Green  -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Theme.Accent.Green.Green3,
-                Colors.Theme.Accent.Green.Green7,
-                Colors.Transparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Theme.Accent.Green.Green3Disabled,
-                Colors.Theme.Accent.Green.Green7Disabled,
-                Colors.Transparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.Theme.Accent.Green.Green5,
-                Colors.Theme.Accent.Green.Green7,
-                Colors.Soft.GreenFocusBorder
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Theme.Accent.Green.Green5,
-                Colors.Theme.Accent.Green.Green7,
-                Colors.Transparent
-            )
-        }
-
-        Color.Blue   -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Theme.Accent.Primary.Primary3,
-                Colors.Theme.Accent.Primary.Primary7,
-                Colors.Transparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Theme.Accent.Primary.Primary3DisabledButton,
-                Colors.Theme.Accent.Primary.Primary7Disabled,
-                Colors.Transparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.Theme.Accent.Primary.Primary5,
-                Colors.Theme.Accent.Primary.Primary7,
-                Colors.Soft.BlueFocusBorder
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Theme.Accent.Primary.Primary5,
-                Colors.Theme.Accent.Primary.Primary7,
-                Colors.Transparent
-            )
-        }
-
-        Color.Red    -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Theme.Accent.Red.Red3,
-                Colors.Theme.Accent.Red.Red7,
-                Colors.Transparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Theme.Accent.Red.Red3DisabledButton,
-                Colors.Theme.Accent.Red.Red7Disabled,
-                Colors.Transparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.Theme.Accent.Red.Red5,
-                Colors.Theme.Accent.Red.Red7,
-                Colors.Soft.RedFocusBorder
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Theme.Accent.Red.Red5,
-                Colors.Theme.Accent.Red.Red7,
-                Colors.Transparent
-            )
-        }
-
-        Color.Yellow -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Theme.Accent.Yellow.Yellow3,
-                Colors.Theme.Accent.Yellow.Yellow7,
-                Colors.Transparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Theme.Accent.Yellow.Yellow3DisabledButton,
-                Colors.Theme.Accent.Yellow.Yellow7Disabled,
-                Colors.Transparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.Theme.Accent.Yellow.Yellow5,
-                Colors.Theme.Accent.Yellow.Yellow7,
-                Colors.Soft.YellowFocusBorder
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Theme.Accent.Yellow.Yellow5,
-                Colors.Theme.Accent.Yellow.Yellow7,
-                Colors.Transparent
-            )
-        }
-
-        Color.Light  -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.White.White10,
-                Colors.Theme.Foreground.ForegroundInverse,
-                Colors.Transparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.White.White10Disabled,
-                Colors.Theme.Foreground.ForegroundInverseDisabled,
-                Colors.Transparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.White.White20,
-                Colors.Theme.Foreground.ForegroundInverse,
-                Colors.WhiteColor
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.White.White20,
-                Colors.Theme.Foreground.ForegroundInverse,
-                Colors.Transparent
-            )
+        ButtonTheme.Style.White -> if (color == ButtonTheme.Color.Light && state != ButtonTheme.State.Default) Palette.Transparent else border
+        else                    -> when {
+            state != ButtonTheme.State.Focus                                    -> Palette.Transparent
+            accent != null                                                      -> accent.solid
+            color == ButtonTheme.Color.Light                                    -> Palette.White
+            style == ButtonTheme.Style.Ghost || style == ButtonTheme.Style.Link -> border
+            else                                                                -> Palette.Transparent
         }
     }
-
-    Style.Solid    -> when (color) {
-        Color.Dark   -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Theme.Secondary.Secondary,
-                Colors.Theme.Secondary.SecondaryForeground,
-                Colors.Transparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Theme.Secondary.SecondaryDisabled,
-                Colors.Theme.Secondary.SecondaryForegroundDisabled,
-                Colors.Transparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.Theme.Secondary.SecondaryFocus,
-                Colors.Theme.Secondary.SecondaryForeground,
-                Colors.Transparent
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Theme.Secondary.SecondaryHover,
-                Colors.Theme.Secondary.SecondaryForeground,
-                Colors.Transparent
-            )
-        }
-
-        Color.Gray   -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Theme.Surface.Surface4,
-                Colors.Theme.Foreground.ForegroundInverse,
-                Colors.Transparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Theme.Surface.Surface4Disabled,
-                Colors.Theme.Foreground.ForegroundInverseDisabled,
-                Colors.Transparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.Theme.Surface.Surface5,
-                Colors.Theme.Foreground.ForegroundInverse,
-                Colors.Transparent
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Theme.Surface.Surface5,
-                Colors.Theme.Foreground.ForegroundInverse,
-                Colors.Transparent
-            )
-        }
-
-        Color.Green  -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Teal.Teal500,
-                Colors.Theme.Foreground.ForegroundInverse,
-                Colors.Transparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Teal.Teal500DisabledButton,
-                Colors.Theme.Foreground.ForegroundInverseDisabled,
-                Colors.Transparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.Teal.Teal600,
-                Colors.Theme.Foreground.ForegroundInverse,
-                Colors.Solid.GreenFocusBorder
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Teal.Teal600,
-                Colors.Theme.Foreground.ForegroundInverse,
-                Colors.Transparent
-            )
-        }
-
-        Color.Blue   -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Theme.Default.Primary,
-                Colors.Theme.Default.PrimaryForeground,
-                Colors.Transparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Theme.Default.PrimaryDisabled,
-                Colors.Theme.Default.PrimaryForegroundDisabled,
-                Colors.Transparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.Theme.Default.PrimaryFocus,
-                Colors.Theme.Default.PrimaryForeground,
-                Colors.Solid.BlueFocusBorder
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Theme.Default.PrimaryHover,
-                Colors.Theme.Default.PrimaryForeground,
-                Colors.Transparent
-            )
-        }
-
-        Color.Red    -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Red.Red500,
-                Colors.Theme.Foreground.ForegroundInverse,
-                Colors.Transparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Red.Red500Disabled,
-                Colors.Theme.Foreground.ForegroundInverseDisabled,
-                Colors.Transparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.Red.Red600,
-                Colors.Theme.Foreground.ForegroundInverse,
-                Colors.Solid.RedFocusBorder
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Red.Red600,
-                Colors.Theme.Foreground.ForegroundInverse,
-                Colors.Transparent
-            )
-        }
-
-        Color.Yellow -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Yellow.Yellow500,
-                Colors.Theme.Foreground.ForegroundInverse,
-                Colors.Transparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Yellow.Yellow500Disabled,
-                Colors.Theme.Foreground.ForegroundInverseDisabled,
-                Colors.Transparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.Yellow.Yellow600,
-                Colors.Theme.Foreground.ForegroundInverse,
-                Colors.Solid.YellowFocusBorder
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Yellow.Yellow600,
-                Colors.Theme.Foreground.ForegroundInverse,
-                Colors.Transparent
-            )
-        }
-
-        Color.Light  -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Theme.Background.BackgroundPlain,
-                Colors.Theme.Foreground.Inverse,
-                Colors.Transparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Theme.Background.BackgroundPlainDisabled,
-                Colors.Theme.Foreground.InverseDisabled,
-                Colors.Transparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.White.White90,
-                Colors.Theme.Foreground.Inverse,
-                Colors.WhiteColor
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.White.White90,
-                Colors.Theme.Foreground.Inverse,
-                Colors.Transparent
-            )
-        }
-    }
-
-    Style.Link     -> when (color) {
-        Color.Dark   -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Foreground.Foreground,
-                Colors.Transparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Foreground.ForegroundDisabled,
-                Colors.Transparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.White.White1,
-                Colors.Theme.Default.PrimaryFocus,
-                Colors.Theme.Border.BorderTransparent
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Default.PrimaryHover,
-                Colors.Transparent
-            )
-        }
-
-        Color.Gray   -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Muted.MutedForeground1,
-                Colors.Transparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Muted.MutedForeground1Disabled,
-                Colors.Transparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.White.White1,
-                Colors.Theme.Default.PrimaryFocus,
-                Colors.Theme.Border.BorderTransparent
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Default.PrimaryFocus,
-                Colors.Transparent
-            )
-        }
-
-        Color.Green  -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Teal.Teal500,
-                Colors.Transparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Teal.Teal500DisabledButton,
-                Colors.Transparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.White.White1,
-                Colors.Teal.Teal600,
-                Colors.Link.GreenFocusBorder
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Teal.Teal600,
-                Colors.Transparent
-            )
-        }
-
-        Color.Blue   -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Default.Primary,
-                Colors.Transparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Default.PrimaryDisabled,
-                Colors.Transparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.White.White1,
-                Colors.Theme.Default.PrimaryFocus,
-                Colors.Link.BlueFocusBorder
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Default.PrimaryHover,
-                Colors.Transparent
-            )
-        }
-
-        Color.Red    -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Red.Red500,
-                Colors.Transparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Red.Red500Disabled,
-                Colors.Transparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.White.White1,
-                Colors.Red.Red600,
-                Colors.Link.RedFocusBorder
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Red.Red600,
-                Colors.Transparent
-            )
-        }
-
-        Color.Yellow -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Yellow.Yellow500,
-                Colors.Transparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Yellow.Yellow500Disabled,
-                Colors.Transparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.White.White1,
-                Colors.Yellow.Yellow600,
-                Colors.Link.YellowFocusBorder
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Yellow.Yellow600,
-                Colors.Transparent
-            )
-        }
-
-        Color.Light  -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Foreground.ForegroundInverse,
-                Colors.Transparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Foreground.ForegroundInverseDisabled,
-                Colors.Transparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.White.White1,
-                Colors.Theme.Foreground.ForegroundInverse,
-                Colors.WhiteColor
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Transparent,
-                Colors.Theme.Foreground.ForegroundInverse,
-                Colors.Transparent
-            )
-        }
-    }
-
-    Style.White    -> when (color) {
-        Color.Dark   -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Theme.Layer.Layer,
-                Colors.Theme.Layer.LayerForeground,
-                Colors.Theme.Border.BorderTransparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Theme.Layer.Layer,
-                Colors.Theme.Layer.LayerForeground,
-                Colors.Theme.Border.BorderTransparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.Theme.Layer.LayerFocus,
-                Colors.Theme.Layer.LayerForeground,
-                Colors.Theme.Border.BorderTransparent
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Theme.Layer.LayerHover,
-                Colors.Theme.Layer.LayerForeground,
-                Colors.Theme.Border.BorderTransparent
-            )
-        }
-
-        Color.Gray   -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Theme.Layer.Layer,
-                Colors.Theme.Muted.MutedForeground1,
-                Colors.Theme.Border.BorderTransparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Theme.Layer.Layer,
-                Colors.Theme.Muted.MutedForeground1,
-                Colors.Theme.Border.BorderTransparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.Theme.Layer.LayerFocus,
-                Colors.Theme.Muted.MutedForeground1,
-                Colors.Theme.Border.BorderTransparent
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Theme.Layer.LayerHover,
-                Colors.Theme.Muted.MutedForeground1,
-                Colors.Theme.Border.BorderTransparent
-            )
-        }
-
-        Color.Green  -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Theme.Layer.Layer,
-                Colors.Teal.Teal500,
-                Colors.Theme.Border.BorderTransparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Theme.Layer.Layer,
-                Colors.Teal.Teal500,
-                Colors.Theme.Border.BorderTransparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.Theme.Layer.LayerFocus,
-                Colors.Teal.Teal500,
-                Colors.Theme.Border.BorderTransparent
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Theme.Layer.LayerHover,
-                Colors.Teal.Teal500,
-                Colors.Theme.Border.BorderTransparent
-            )
-        }
-
-        Color.Blue   -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Theme.Layer.Layer,
-                Colors.Theme.Default.Primary,
-                Colors.Theme.Border.BorderTransparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Theme.Layer.Layer,
-                Colors.Theme.Default.Primary,
-                Colors.Theme.Border.BorderTransparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.Theme.Layer.LayerFocus,
-                Colors.Theme.Default.Primary,
-                Colors.Theme.Border.BorderTransparent
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Theme.Layer.LayerHover,
-                Colors.Theme.Default.Primary,
-                Colors.Theme.Border.BorderTransparent
-            )
-        }
-
-        Color.Red    -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Theme.Layer.Layer,
-                Colors.Red.Red500,
-                Colors.Theme.Border.BorderTransparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Theme.Layer.Layer,
-                Colors.Red.Red500,
-                Colors.Theme.Border.BorderTransparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.Theme.Layer.LayerFocus,
-                Colors.Red.Red500,
-                Colors.Theme.Border.BorderTransparent
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Theme.Layer.LayerHover,
-                Colors.Red.Red500,
-                Colors.Theme.Border.BorderTransparent
-            )
-        }
-
-        Color.Yellow -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Theme.Layer.Layer,
-                Colors.Yellow.Yellow500,
-                Colors.Theme.Border.BorderTransparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Theme.Layer.Layer,
-                Colors.Yellow.Yellow500,
-                Colors.Theme.Border.BorderTransparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.Theme.Layer.LayerFocus,
-                Colors.Yellow.Yellow500,
-                Colors.Theme.Border.BorderTransparent
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.Theme.Layer.LayerHover,
-                Colors.Yellow.Yellow500,
-                Colors.Theme.Border.BorderTransparent
-            )
-        }
-
-        Color.Light  -> when (state) {
-            State.Default  -> ButtonTheme(
-                Colors.Theme.Layer.Layer,
-                Colors.Theme.Foreground.Inverse,
-                Colors.Theme.Border.BorderTransparent
-            )
-
-            State.Disabled -> ButtonTheme(
-                Colors.Theme.Layer.LayerDisabled,
-                Colors.Theme.Foreground.InverseDisabled,
-                Colors.Theme.Border.BorderTransparent
-            )
-
-            State.Focus    -> ButtonTheme(
-                Colors.White.White90,
-                Colors.Theme.Foreground.Inverse,
-                Colors.Transparent
-            )
-
-            State.Hover    -> ButtonTheme(
-                Colors.White.White90,
-                Colors.Theme.Foreground.Inverse,
-                Colors.Transparent
-            )
-        }
-    }
+}
+
+private fun getHorizontalPadding(size: ButtonTheme.Size): Dp = when (size) {
+    ButtonTheme.Size.Default -> 16.dp
+    ButtonTheme.Size.Large   -> 20.dp
+    ButtonTheme.Size.Small   -> 12.dp
+}
+
+private fun getVerticalPadding(size: ButtonTheme.Size): Dp = when (size) {
+    ButtonTheme.Size.Default -> 12.dp
+    ButtonTheme.Size.Large   -> 20.dp
+    ButtonTheme.Size.Small   -> 8.dp
 }

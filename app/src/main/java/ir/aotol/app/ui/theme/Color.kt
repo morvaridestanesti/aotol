@@ -12,10 +12,13 @@ val Pink40 = Color(0xFF7D5260)
 
 object Colors {
     object Background {
+        val Active = Color(0xFFEFF6FF)
         val Card = Color(0xFFF9FAFB)
         val Normal = Color(0xFFFFFFFF)
         val Error = Color(0xFFFEF9F9)
         val ErrorDark = Color(0xFFFDF5F5)
+        val Warning = Color(0xFFFEFDF4)
+        val WarningDark = Color(0xFFFDFBE7)
     }
 
     object Foreground {
@@ -23,6 +26,7 @@ object Colors {
         val Focus = Color(0xFF2563EB)
         val Icon = Color(0xFF1F2937)
         val Normal = Color(0xFFD1D5DB)
+        val Warning = Color(0xFFE1BD6A)
     }
 
     object Text {

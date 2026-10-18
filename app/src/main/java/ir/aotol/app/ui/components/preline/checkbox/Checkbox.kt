@@ -1,6 +1,7 @@
 package ir.aotol.app.ui.components.preline.checkbox
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -22,38 +24,35 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import ir.aotol.app.R
-import ir.aotol.app.ui.components.preline.checkbox.CheckBoxTheme.State
-import ir.aotol.app.ui.components.preline.checkbox.CheckBoxTheme.Size
-import ir.aotol.app.ui.components.preline.checkbox.CheckBoxTheme.Style
-import ir.aotol.app.ui.components.preline.checkbox.CheckBoxTheme.Type
+import ir.aotol.app.helpers.disabledAlpha
+import ir.aotol.app.ui.components.preline.PrelineTheme
+import ir.aotol.app.ui.components.preline.medium
 
 @Composable
 fun Checkbox(
-    label: String?,
+    label: String,
     modifier: Modifier = Modifier,
     secondaryLabel: String? = null,
     leadingIcon: Painter? = null,
     trailingIcon: Painter? = null,
     leading: Boolean = true,
     checked: Boolean = true,
-    type: Type = Type.Solid,
-    style: Style = Style.Plain,
-    state: State = State.Default,
-    size: Size = Size.Default,
-    isFilled: Boolean = true,
+    type: CheckboxTheme.Type = CheckboxTheme.Type.Solid,
+    style: CheckboxTheme.Style = CheckboxTheme.Style.Plain,
+    state: CheckboxTheme.State = CheckboxTheme.State.Default,
+    size: CheckboxTheme.Size = CheckboxTheme.Size.Default,
     onCheckedChange: ((Boolean) -> Unit)? = null
 ) {
     val theme = getTheme(checked, type, style, state, size)
 
     Card(
         modifier = modifier
-            .then(if (isFilled) Modifier.fillMaxWidth() else Modifier)
-            .clickable(enabled = state != State.Disabled, interactionSource = remember { MutableInteractionSource() }, indication = null) { onCheckedChange?.invoke(!checked) },
+            .fillMaxWidth()
+            .disabledAlpha(state == CheckboxTheme.State.Disabled)
+            .clickable(enabled = state != CheckboxTheme.State.Disabled, interactionSource = remember { MutableInteractionSource() }, indication = null) { onCheckedChange?.invoke(!checked) },
         colors = CardDefaults.cardColors(theme.cardBackground),
         border = BorderStroke(1.dp, theme.cardBorder),
         elevation = CardDefaults.cardElevation(0.dp),
@@ -61,7 +60,7 @@ fun Checkbox(
     ) {
         Row(
             modifier = Modifier
-                .then(if (isFilled) Modifier.fillMaxWidth() else Modifier)
+                .fillMaxWidth()
                 .padding(theme.rowPadding),
             verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -76,28 +75,25 @@ fun Checkbox(
                 )
             }
 
-            if (leading) CheckboxView(checked = checked, state = state, checkBoxTheme = theme)
+            if (leading) CheckboxView(checked = checked, type = type, style = style, state = state, size = size, theme = theme)
 
-            label?.let { label ->
-                Column(modifier = Modifier.then(if (isFilled) Modifier.weight(1f) else Modifier)) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = label,
+                    color = theme.labelColor,
+                    style = PrelineTheme.typography.base.medium,
+                )
+
+                secondaryLabel?.let {
                     Text(
-                        text = label,
-                        color = theme.labelColor,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium
+                        text = it,
+                        color = theme.secondaryLabelColor,
+                        style = PrelineTheme.typography.base.medium,
                     )
-                    secondaryLabel?.let { secondaryLabel ->
-                        Text(
-                            text = secondaryLabel,
-                            color = theme.secondaryLabelColor,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
                 }
             }
 
-            if (!leading) CheckboxView(checked = checked, state = state, checkBoxTheme = theme)
+            if (!leading) CheckboxView(checked = checked, type = type, style = style, state = state, size = size, theme = theme)
 
             trailingIcon?.let {
                 Icon(
@@ -112,32 +108,34 @@ fun Checkbox(
 }
 
 @Composable
-private fun CheckboxView(checked: Boolean, state: State, checkBoxTheme: CheckBoxTheme) {
+private fun CheckboxView(checked: Boolean, type: CheckboxTheme.Type, style: CheckboxTheme.Style, state: CheckboxTheme.State, size: CheckboxTheme.Size, theme: CheckboxTheme) {
     Card(
-        modifier = Modifier.size(checkBoxTheme.checkboxSize),
-        colors = CardDefaults.cardColors(containerColor = checkBoxTheme.checkboxBackground),
-        border = BorderStroke(1.dp, checkBoxTheme.checkboxStroke),
+        modifier = Modifier
+            .then(if (state == CheckboxTheme.State.Focus) Modifier.border(2.dp, theme.focusRingColor, RoundedCornerShape(6.dp)).padding(2.dp) else Modifier)
+            .size(theme.checkboxSize),
+        colors = CardDefaults.cardColors(containerColor = theme.checkboxBackground),
+        border = BorderStroke(1.dp, theme.checkboxStroke),
         elevation = CardDefaults.cardElevation(0.dp),
-        shape = checkBoxTheme.checkboxShape
+        shape = theme.checkboxShape
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            if (state == State.Indeterminate) {
+            if (state == CheckboxTheme.State.Indeterminate) {
                 Icon(
-                    painter = painterResource(R.drawable.aotol),
+                    painter = painterResource(R.drawable.ic_minus),
                     contentDescription = null,
-                    modifier = Modifier.size(checkBoxTheme.checkboxIconSize),
-                    tint = checkBoxTheme.checkboxForeground
+                    modifier = Modifier.size(theme.checkboxIconSize),
+                    tint = theme.checkboxForeground
                 )
             } else {
                 if (checked) {
                     Icon(
                         painter = painterResource(R.drawable.ic_check),
                         contentDescription = null,
-                        modifier = Modifier.size(checkBoxTheme.checkboxIconSize),
-                        tint = checkBoxTheme.checkboxForeground
+                        modifier = Modifier.size(theme.checkboxIconSize),
+                        tint = theme.checkboxForeground
                     )
                 }
             }
@@ -153,10 +151,10 @@ private fun Normal() {
         label = "Title",
         secondaryLabel = "Description text",
         checked = checked.value,
-        type = Type.Solid,
-        style = Style.Plain,
-        state = State.Default,
-        size = Size.Default
+        type = CheckboxTheme.Type.Solid,
+        style = CheckboxTheme.Style.Plain,
+        state = CheckboxTheme.State.Default,
+        size = CheckboxTheme.Size.Default
     ) { checked.value = it }
 }
 
@@ -165,10 +163,10 @@ private fun Normal() {
 private fun Indeterminate() {
     Checkbox(
         label = "Indeterminate",
-        type = Type.Solid,
-        style = Style.Plain,
-        state = State.Indeterminate,
-        size = Size.Default
+        type = CheckboxTheme.Type.Solid,
+        style = CheckboxTheme.Style.Plain,
+        state = CheckboxTheme.State.Indeterminate,
+        size = CheckboxTheme.Size.Default
     )
 }
 
@@ -178,10 +176,10 @@ private fun Focus() {
     val checked = remember { mutableStateOf(false) }
     Checkbox(
         label = "Focus",
-        type = Type.Solid,
-        style = Style.Plain,
-        state = State.Focus,
-        size = Size.Default,
+        type = CheckboxTheme.Type.Solid,
+        style = CheckboxTheme.Style.Plain,
+        state = CheckboxTheme.State.Focus,
+        size = CheckboxTheme.Size.Default,
         checked = checked.value
     ) { checked.value = it }
 }
@@ -191,10 +189,10 @@ private fun Focus() {
 private fun Disabled() {
     Checkbox(
         label = "Disabled",
-        type = Type.Solid,
-        style = Style.Plain,
-        state = State.Disabled,
-        size = Size.Default,
+        type = CheckboxTheme.Type.Solid,
+        style = CheckboxTheme.Style.Plain,
+        state = CheckboxTheme.State.Disabled,
+        size = CheckboxTheme.Size.Default,
         checked = false
     )
 }
@@ -204,10 +202,10 @@ private fun Disabled() {
 private fun CheckedDisabled() {
     Checkbox(
         label = "Checked Disabled",
-        type = Type.Solid,
-        style = Style.Plain,
-        state = State.Disabled,
-        size = Size.Default
+        type = CheckboxTheme.Type.Solid,
+        style = CheckboxTheme.Style.Plain,
+        state = CheckboxTheme.State.Disabled,
+        size = CheckboxTheme.Size.Default
     )
 }
 
@@ -216,10 +214,10 @@ private fun CheckedDisabled() {
 private fun Success() {
     Checkbox(
         label = "Success",
-        type = Type.Solid,
-        style = Style.Plain,
-        state = State.Success,
-        size = Size.Default
+        type = CheckboxTheme.Type.Solid,
+        style = CheckboxTheme.Style.Plain,
+        state = CheckboxTheme.State.Success,
+        size = CheckboxTheme.Size.Default
     )
 }
 
@@ -228,10 +226,10 @@ private fun Success() {
 private fun Invalid() {
     Checkbox(
         label = "Invalid",
-        type = Type.Solid,
-        style = Style.Plain,
-        state = State.Invalid,
-        size = Size.Default
+        type = CheckboxTheme.Type.Solid,
+        style = CheckboxTheme.Style.Plain,
+        state = CheckboxTheme.State.Invalid,
+        size = CheckboxTheme.Size.Default
     )
 }
 
@@ -241,12 +239,12 @@ private fun WithinInput() {
     Checkbox(
         label = "Within Input",
         secondaryLabel = "Description text",
-        type = Type.Soft,
-        style = Style.WithinInput,
-        state = State.Default,
-        size = Size.Default,
-        leadingIcon = painterResource(R.drawable.aotol),
-        trailingIcon = painterResource(R.drawable.aotol)
+        type = CheckboxTheme.Type.Soft,
+        style = CheckboxTheme.Style.WithinInput,
+        state = CheckboxTheme.State.Default,
+        size = CheckboxTheme.Size.Default,
+        leadingIcon = painterResource(R.drawable.ic_align_vertical_distribute_start),
+        trailingIcon = painterResource(R.drawable.ic_table)
     )
 }
 
@@ -256,25 +254,11 @@ private fun Plain() {
     Checkbox(
         label = "Plain",
         secondaryLabel = "Description text",
-        type = Type.Soft,
-        style = Style.Plain,
-        state = State.Default,
-        size = Size.Default,
-        leadingIcon = painterResource(R.drawable.aotol),
-        trailingIcon = painterResource(R.drawable.aotol)
-    )
-}
-
-@Preview
-@Composable
-private fun WithoutLabel() {
-    Checkbox(
-        label = null,
-        secondaryLabel = "Description text",
-        type = Type.Soft,
-        style = Style.Plain,
-        state = State.Default,
-        size = Size.Default,
-        isFilled = false
+        type = CheckboxTheme.Type.Soft,
+        style = CheckboxTheme.Style.Plain,
+        state = CheckboxTheme.State.Default,
+        size = CheckboxTheme.Size.Default,
+        leadingIcon = painterResource(R.drawable.ic_align_vertical_distribute_start),
+        trailingIcon = painterResource(R.drawable.ic_table)
     )
 }

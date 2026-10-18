@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,15 +20,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import ir.aotol.app.R
-import ir.aotol.app.ui.components.preline.button_icon.ButtonIconTheme.Color
-import ir.aotol.app.ui.components.preline.button_icon.ButtonIconTheme.Size
-import ir.aotol.app.ui.components.preline.button_icon.ButtonIconTheme.State
-import ir.aotol.app.ui.components.preline.button_icon.ButtonIconTheme.Type
+import ir.aotol.app.helpers.disabledAlpha
+import ir.aotol.app.ui.components.preline.PrelineTheme
+import ir.aotol.app.ui.components.preline.medium
+import ir.aotol.app.ui.components.preline.semiBold
 
 @Composable
 fun ButtonIcon(
@@ -36,24 +36,28 @@ fun ButtonIcon(
     avatar: Painter? = null,
     placeholder: String? = null,
     badge: String? = null,
-    type: Type = Type.Solid,
-    color: Color = Color.Dark,
-    state: State = State.Default,
-    size: Size = Size.Default,
+    type: ButtonIconTheme.Type = ButtonIconTheme.Type.Solid,
+    color: ButtonIconTheme.Color = ButtonIconTheme.Color.Dark,
+    state: ButtonIconTheme.State = ButtonIconTheme.State.Default,
+    size: ButtonIconTheme.Size = ButtonIconTheme.Size.Default,
+    shape: ButtonIconTheme.Shape = ButtonIconTheme.Shape.Rounded,
+    loading: Boolean = false,
     onClick: () -> Unit,
 ) {
-    val theme = getTheme(type, color, state, size)
+    val theme = getTheme(type, color, state, size, shape)
+    // A loading button keeps its look but ignores taps until the work is done.
+    val clickable = state != ButtonIconTheme.State.Disabled && !loading
 
-    Box(modifier = modifier) {
+    Box(modifier = modifier.disabledAlpha(state == ButtonIconTheme.State.Disabled)) {
         Box(modifier = Modifier.then(badge?.let { Modifier.padding(top = 10.dp) } ?: Modifier)) {
             Card(
                 modifier = Modifier
                     .padding(end = badge?.let { 10.dp } ?: 0.dp)
                     .size(theme.height)
                     .align(Alignment.BottomEnd)
-                    .clickable { onClick() },
+                    .clickable(enabled = clickable, role = Role.Button) { onClick() },
                 colors = CardDefaults.cardColors(theme.background),
-                border = BorderStroke(if (state == State.Focus) 2.dp else 1.dp, theme.stroke),
+                border = BorderStroke(if (state == ButtonIconTheme.State.Focus) 2.dp else 1.dp, theme.stroke),
                 elevation = CardDefaults.cardElevation(0.dp),
                 shape = theme.shape
             ) {
@@ -64,22 +68,27 @@ fun ButtonIcon(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    placeholder?.let { label ->
+                    if (loading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(theme.iconSize),
+                            color = theme.foreground,
+                            strokeWidth = 2.dp
+                        )
+                    } else placeholder?.let { label ->
                         Text(
                             text = label,
                             color = theme.foreground,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.SemiBold
+                            style = PrelineTheme.typography.sm.semiBold,
                         )
                     }
-                    avatar?.let { av ->
+                    if (!loading) avatar?.let { av ->
                         Image(
                             painter = av,
                             contentDescription = null,
                             modifier = Modifier.size(theme.iconSize)
                         )
                     }
-                    icon?.let { ic ->
+                    if (!loading) icon?.let { ic ->
                         Icon(
                             painter = ic,
                             contentDescription = null,
@@ -102,9 +111,7 @@ fun ButtonIcon(
                     Text(
                         text = bd,
                         color = theme.badgeForeground,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        lineHeight = 16.sp,
+                        style = PrelineTheme.typography.xs.medium,
                         modifier = Modifier.padding(horizontal = 4.dp),
                         maxLines = 1
                     )
@@ -118,12 +125,12 @@ fun ButtonIcon(
 @Composable
 private fun Preview() {
     ButtonIcon(
-        icon = painterResource(R.drawable.aotol),
+        icon = painterResource(R.drawable.ic_home),
         placeholder = "Button",
-        type = Type.Solid,
-        color = Color.Blue,
-        state = State.Default,
-        size = Size.Default,
+        type = ButtonIconTheme.Type.Solid,
+        color = ButtonIconTheme.Color.Blue,
+        state = ButtonIconTheme.State.Default,
+        size = ButtonIconTheme.Size.Default,
         badge = "5"
     ) {}
 }

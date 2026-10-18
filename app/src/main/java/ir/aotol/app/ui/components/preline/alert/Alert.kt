@@ -24,20 +24,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import ir.aotol.app.ui.components.preline.alert.data.AlertButton
 import ir.aotol.app.R
-import ir.aotol.app.helperes.invisibleClickable
-import ir.aotol.app.ui.components.preline.Colors
-import ir.aotol.app.ui.components.preline.alert.AlertTheme.Color
-import ir.aotol.app.ui.components.preline.alert.AlertTheme.Type
+import ir.aotol.app.helpers.invisibleClickable
+import ir.aotol.app.ui.components.preline.alert.data.AlertButton
 import ir.aotol.app.ui.components.preline.button.Button
 import ir.aotol.app.ui.components.preline.button.ButtonTheme
 import ir.aotol.app.ui.components.preline.styled_icon.StyledIcon
 import ir.aotol.app.ui.components.preline.styled_icon.StyledIconTheme
+import ir.aotol.app.ui.components.preline.Palette
+import ir.aotol.app.ui.components.preline.PrelineTheme
+import ir.aotol.app.ui.components.preline.medium
+import ir.aotol.app.ui.components.preline.semiBold
 
 @Composable
 fun Alert(
@@ -50,8 +49,8 @@ fun Alert(
     messageContent: String? = null,
     button1: AlertButton? = null,
     button2: AlertButton? = null,
-    type: Type = Type.Solid,
-    color: Color = Color.Dark,
+    type: AlertTheme.Type = AlertTheme.Type.Solid,
+    color: AlertTheme.Color = AlertTheme.Color.Dark,
     onClose: (() -> Unit)? = null
 ) {
     val theme = getTheme(type, color)
@@ -70,7 +69,8 @@ fun Alert(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(intrinsicSize = IntrinsicSize.Min)
-                    .padding(16.dp),
+                    .padding(16.dp)
+                    .padding(end = if (onClose != null) 16.dp else 0.dp),
                 verticalAlignment = Alignment.Top,
                 horizontalArrangement = Arrangement.spacedBy(20.dp)
             ) {
@@ -78,7 +78,7 @@ fun Alert(
                     StyledIcon(
                         icon = painterResource(R.drawable.ic_check),
                         type = StyledIconTheme.Type.SoftOutlined,
-                        color = theme.featuredIconColor,
+                        color = theme.featuredIcon,
                         size = StyledIconTheme.Size.Small,
                         shape = StyledIconTheme.Shape.Circular
                     )
@@ -86,7 +86,7 @@ fun Alert(
                 avatar?.let {
                     Card(
                         modifier = Modifier.size(36.dp),
-                        colors = CardDefaults.cardColors(Colors.WhiteColor),
+                        colors = CardDefaults.cardColors(Palette.White),
                         elevation = CardDefaults.cardElevation(0.dp),
                         shape = CircleShape
                     ) {
@@ -121,17 +121,16 @@ fun Alert(
                         title?.let {
                             Text(
                                 text = it,
+                                modifier = Modifier.weight(1f, fill = false),
                                 color = theme.primaryForeground,
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.SemiBold
+                                style = PrelineTheme.typography.lg.semiBold,
                             )
                         }
                         subtitle?.let {
                             Text(
                                 text = it,
                                 color = theme.secondaryForeground,
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Medium
+                                style = PrelineTheme.typography.sm.medium,
                             )
                         }
                     }
@@ -139,8 +138,7 @@ fun Alert(
                         Text(
                             text = it,
                             color = theme.secondaryForeground,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium
+                            style = PrelineTheme.typography.base.medium,
                         )
                     }
                     button1?.let { b1 ->
@@ -154,23 +152,23 @@ fun Alert(
                                 placeholder = b1.title,
                                 trailingIcon = painterResource(R.drawable.ic_chevron_forward),
                                 style = when (type) {
-                                    Type.Solid, Type.Soft -> ButtonTheme.Style.Soft
-                                    Type.White            -> ButtonTheme.Style.Link
+                                    AlertTheme.Type.Solid, AlertTheme.Type.Soft -> ButtonTheme.Style.Soft
+                                    AlertTheme.Type.White                       -> ButtonTheme.Style.Link
                                 },
                                 color = when (type) {
-                                    Type.Solid -> ButtonTheme.Color.Light
-                                    Type.Soft  -> when (color) {
-                                        Color.White  -> ButtonTheme.Color.Blue
-                                        Color.Dark   -> ButtonTheme.Color.Dark
-                                        Color.Gray   -> ButtonTheme.Color.Gray
-                                        Color.Green  -> ButtonTheme.Color.Green
-                                        Color.Blue   -> ButtonTheme.Color.Blue
-                                        Color.Red    -> ButtonTheme.Color.Red
-                                        Color.Yellow -> ButtonTheme.Color.Yellow
-                                        Color.Light  -> ButtonTheme.Color.Light
+                                    AlertTheme.Type.Solid -> ButtonTheme.Color.Light
+                                    AlertTheme.Type.Soft  -> when (color) {
+                                        AlertTheme.Color.White  -> ButtonTheme.Color.Blue
+                                        AlertTheme.Color.Dark   -> ButtonTheme.Color.Dark
+                                        AlertTheme.Color.Gray   -> ButtonTheme.Color.Gray
+                                        AlertTheme.Color.Green  -> ButtonTheme.Color.Green
+                                        AlertTheme.Color.Blue   -> ButtonTheme.Color.Blue
+                                        AlertTheme.Color.Red    -> ButtonTheme.Color.Red
+                                        AlertTheme.Color.Yellow -> ButtonTheme.Color.Yellow
+                                        AlertTheme.Color.Light  -> ButtonTheme.Color.Light
                                     }
 
-                                    Type.White -> ButtonTheme.Color.Blue
+                                    AlertTheme.Type.White -> ButtonTheme.Color.Blue
                                 },
                                 size = ButtonTheme.Size.Small,
                             ) { b1.onClick() }
@@ -179,23 +177,23 @@ fun Alert(
                                     placeholder = b2.title,
                                     style = ButtonTheme.Style.Link,
                                     color = when (type) {
-                                        Type.Solid -> when (color) {
-                                            Color.Light -> ButtonTheme.Color.Dark
-                                            else        -> ButtonTheme.Color.Light
+                                        AlertTheme.Type.Solid -> when (color) {
+                                            AlertTheme.Color.Light -> ButtonTheme.Color.Dark
+                                            else                   -> ButtonTheme.Color.Light
                                         }
 
-                                        Type.Soft  -> when (color) {
-                                            Color.White  -> ButtonTheme.Color.Blue
-                                            Color.Dark   -> ButtonTheme.Color.Dark
-                                            Color.Gray   -> ButtonTheme.Color.Gray
-                                            Color.Green  -> ButtonTheme.Color.Green
-                                            Color.Blue   -> ButtonTheme.Color.Blue
-                                            Color.Red    -> ButtonTheme.Color.Red
-                                            Color.Yellow -> ButtonTheme.Color.Yellow
-                                            Color.Light  -> ButtonTheme.Color.Light
+                                        AlertTheme.Type.Soft  -> when (color) {
+                                            AlertTheme.Color.White  -> ButtonTheme.Color.Blue
+                                            AlertTheme.Color.Dark   -> ButtonTheme.Color.Dark
+                                            AlertTheme.Color.Gray   -> ButtonTheme.Color.Gray
+                                            AlertTheme.Color.Green  -> ButtonTheme.Color.Green
+                                            AlertTheme.Color.Blue   -> ButtonTheme.Color.Blue
+                                            AlertTheme.Color.Red    -> ButtonTheme.Color.Red
+                                            AlertTheme.Color.Yellow -> ButtonTheme.Color.Yellow
+                                            AlertTheme.Color.Light  -> ButtonTheme.Color.Light
                                         }
 
-                                        Type.White -> ButtonTheme.Color.Gray
+                                        AlertTheme.Type.White -> ButtonTheme.Color.Gray
                                     },
                                     size = ButtonTheme.Size.Small,
                                 ) { b2.onClick() }
@@ -237,7 +235,7 @@ private fun AlertPreview() = Alert(
     messageContent = "This is an alert message!",
     button1 = AlertButton("Buttom-sm") { },
     button2 = AlertButton("Buttom-sm-2") { },
-    type = Type.Solid,
-    color = Color.Blue,
+    type = AlertTheme.Type.Solid,
+    color = AlertTheme.Color.Blue,
     onClose = {}
 )

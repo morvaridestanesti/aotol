@@ -1,17 +1,18 @@
 package ir.aotol.app.ui.components.preline.spinner
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import ir.aotol.app.ui.components.preline.Colors
-import ir.aotol.app.ui.components.preline.spinner.SpinnerTheme.Size as Size
+import ir.aotol.app.ui.components.preline.PrelineTheme
+import ir.aotol.app.ui.components.preline.medium
 
 data class SpinnerTheme(
     val strokeWidth: Dp,
     val spinnerSize: Dp,
-    val textSize: TextUnit,
+    val textStyle: TextStyle,
     val trackColor: Color,
     val progressColor: Color,
     val labelColor: Color,
@@ -24,32 +25,36 @@ data class SpinnerTheme(
     }
 }
 
-internal fun getTheme(size: Size): SpinnerTheme = SpinnerTheme(
+@Composable
+@ReadOnlyComposable
+internal fun getTheme(size: SpinnerTheme.Size): SpinnerTheme = SpinnerTheme(
     strokeWidth = getStrokeWidth(size),
     spinnerSize = getSpinnerSize(size),
-    textSize = getTextSize(size),
-    trackColor = Colors.Theme.Surface.Surface,
-    progressColor = Colors.Theme.Default.Primary,
-    labelColor = Colors.Theme.Foreground.Foreground
+    textStyle = getTextStyle(size),
+    trackColor = PrelineTheme.colors.surface,
+    progressColor = PrelineTheme.colors.primary,
+    labelColor = PrelineTheme.colors.foreground
 )
 
-private fun getStrokeWidth(size: Size): Dp = when (size) {
-    Size.Large   -> 8.dp
-    Size.Default -> 6.dp
-    Size.Small   -> 4.dp
-    Size.XS      -> 2.dp
+private fun getStrokeWidth(size: SpinnerTheme.Size): Dp = when (size) {
+    SpinnerTheme.Size.Large   -> 8.dp
+    SpinnerTheme.Size.Default -> 6.dp
+    SpinnerTheme.Size.Small   -> 4.dp
+    SpinnerTheme.Size.XS      -> 2.dp
 }
 
-private fun getTextSize(size: Size): TextUnit = when (size) {
-    Size.Large   -> 18.sp
-    Size.Default -> 16.sp
-    Size.Small   -> 14.sp
-    Size.XS      -> 12.sp
+@Composable
+@ReadOnlyComposable
+private fun getTextStyle(size: SpinnerTheme.Size): TextStyle = when (size) {
+    SpinnerTheme.Size.Large   -> PrelineTheme.typography.lg.medium
+    SpinnerTheme.Size.Default -> PrelineTheme.typography.base.medium
+    SpinnerTheme.Size.Small   -> PrelineTheme.typography.sm.medium
+    SpinnerTheme.Size.XS      -> PrelineTheme.typography.xs.medium
 }
 
-private fun getSpinnerSize(size: Size): Dp = when (size) {
-    Size.Large   -> 64.dp
-    Size.Default -> 44.dp
-    Size.Small   -> 36.dp
-    Size.XS      -> 20.dp
+private fun getSpinnerSize(size: SpinnerTheme.Size): Dp = when (size) {
+    SpinnerTheme.Size.Large   -> 64.dp
+    SpinnerTheme.Size.Default -> 44.dp
+    SpinnerTheme.Size.Small   -> 36.dp
+    SpinnerTheme.Size.XS      -> 20.dp
 }

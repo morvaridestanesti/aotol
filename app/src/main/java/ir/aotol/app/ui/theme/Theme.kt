@@ -1,4 +1,4 @@
-package ir.aotol.app.ui.theme
+package ir.aotol.app.ui.components.preline
 
 import android.os.Build
 import androidx.compose.foundation.background
@@ -18,6 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
+import ir.aotol.app.ui.theme.Colors
+import ir.aotol.app.ui.theme.Pink40
+import ir.aotol.app.ui.theme.Pink80
+import ir.aotol.app.ui.theme.Purple40
+import ir.aotol.app.ui.theme.Purple80
+import ir.aotol.app.ui.theme.PurpleGrey40
+import ir.aotol.app.ui.theme.PurpleGrey80
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,

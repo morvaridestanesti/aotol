@@ -34,7 +34,7 @@ import ir.aotol.app.ui.components.preline.alert.AlertTheme
 import ir.aotol.app.ui.components.preline.alert.data.AlertButton
 import ir.aotol.app.ui.components.preline.spinner.Spinner
 import ir.aotol.app.ui.components.preline.spinner.SpinnerTheme
-import ir.aotol.app.ui.theme.AotolTheme
+import ir.aotol.app.ui.components.preline.AotolTheme
 import ir.aotol.app.ui.theme.Colors
 
 @Composable

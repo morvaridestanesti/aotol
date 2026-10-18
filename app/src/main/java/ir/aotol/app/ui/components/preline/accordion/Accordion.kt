@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -30,14 +29,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ir.aotol.app.R
-import ir.aotol.app.ui.components.preline.Colors
-import ir.aotol.app.ui.components.preline.accordion.AccordionTheme.Style
-import ir.aotol.app.ui.components.preline.accordion.AccordionTheme.Toggle
-import ir.aotol.app.ui.components.preline.accordion.AccordionTheme.Type
+import ir.aotol.app.ui.components.preline.Palette
+import ir.aotol.app.ui.components.preline.PrelineTheme
 import ir.aotol.app.ui.components.preline.accordion.data.AccordionBadge
 import ir.aotol.app.ui.components.preline.accordion.data.AccordionItem
 import ir.aotol.app.ui.components.preline.badge.Badge
@@ -46,16 +42,16 @@ import ir.aotol.app.ui.components.preline.badge.Badge
 fun Accordion(
     items: List<AccordionItem>,
     modifier: Modifier = Modifier,
-    style: Style = Style.Normal,
-    toggle: Toggle = Toggle.StartPlus,
-    type: Type = Type.Basic
+    style: AccordionTheme.Style = AccordionTheme.Style.Normal,
+    toggle: AccordionTheme.Toggle = AccordionTheme.Toggle.StartPlus,
+    type: AccordionTheme.Type = AccordionTheme.Type.Basic
 ) {
     val itemsState = remember { mutableStateOf(items) }
     val theme = getTheme(style, false)
 
     Card(
         modifier = modifier,
-        colors = CardDefaults.cardColors(Colors.Transparent),
+        colors = CardDefaults.cardColors(Palette.Transparent),
         border = BorderStroke(1.dp, theme.borderColor),
         elevation = CardDefaults.cardElevation(0.dp),
         shape = theme.shape
@@ -72,16 +68,16 @@ fun Accordion(
                         ) {
                             itemsState.value = itemsState.value.mapIndexed { stateIndex, stateItem ->
                                 when (type) {
-                                    Type.Basic      -> stateItem.copy(isExpanded = stateIndex == index && !stateItem.isExpanded)
-                                    Type.AlwaysOpen -> if (stateIndex == index) stateItem.copy(isExpanded = !stateItem.isExpanded) else stateItem
+                                    AccordionTheme.Type.Basic      -> stateItem.copy(isExpanded = stateIndex == index && !stateItem.isExpanded)
+                                    AccordionTheme.Type.AlwaysOpen -> if (stateIndex == index) stateItem.copy(isExpanded = !stateItem.isExpanded) else stateItem
                                 }
                             }
                         }
                 ) {
-                    if (item.isExpanded && style == Style.BorderedOpen) {
+                    if (item.isExpanded && style == AccordionTheme.Style.BorderedOpen) {
                         Card(
                             modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(Colors.Transparent),
+                            colors = CardDefaults.cardColors(Palette.Transparent),
                             border = BorderStroke(1.dp, itemTheme.borderColor),
                             elevation = CardDefaults.cardElevation(0.dp),
                             shape = itemTheme.shape
@@ -91,11 +87,11 @@ fun Accordion(
                     }
                 }
 
-                if (style == Style.Bordered && index != items.lastIndex) {
+                if (style == AccordionTheme.Style.Bordered && index != items.lastIndex) {
                     HorizontalDivider(
                         modifier = Modifier.fillMaxWidth(),
                         thickness = 1.dp,
-                        color = Colors.Theme.Layer.LayerBorder
+                        color = PrelineTheme.colors.layerBorder
                     )
                 }
             }
@@ -104,7 +100,7 @@ fun Accordion(
 }
 
 @Composable
-private fun ItemView(item: AccordionItem, toggle: Toggle, theme: AccordionTheme) {
+private fun ItemView(item: AccordionItem, toggle: AccordionTheme.Toggle, theme: AccordionTheme) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -117,7 +113,7 @@ private fun ItemView(item: AccordionItem, toggle: Toggle, theme: AccordionTheme)
             verticalAlignment = Alignment.CenterVertically
         ) {
             when (toggle) {
-                Toggle.StartPlus  -> Icon(
+                AccordionTheme.Toggle.StartPlus  -> Icon(
                     painter = painterResource(if (item.isExpanded) R.drawable.ic_minus else R.drawable.ic_plus),
                     contentDescription = null,
                     modifier = Modifier
@@ -126,7 +122,7 @@ private fun ItemView(item: AccordionItem, toggle: Toggle, theme: AccordionTheme)
                     tint = theme.titleColor
                 )
 
-                Toggle.StartArrow -> Icon(
+                AccordionTheme.Toggle.StartArrow -> Icon(
                     painter = painterResource(if (item.isExpanded) R.drawable.ic_chevron_up else R.drawable.ic_chevron_down),
                     contentDescription = null,
                     modifier = Modifier
@@ -135,24 +131,13 @@ private fun ItemView(item: AccordionItem, toggle: Toggle, theme: AccordionTheme)
                     tint = theme.titleColor
                 )
 
-                else              -> {}
-            }
-
-            item.icon?.let {
-                Icon(
-                    painter = it,
-                    contentDescription = null,
-                    modifier = Modifier.size(theme.iconSize),
-                    tint = theme.titleColor
-                )
-                Spacer(Modifier.width(8.dp))
+                else                             -> {}
             }
 
             Text(
                 text = item.title,
                 color = theme.titleColor,
-                fontSize = theme.titleFontSize,
-                fontWeight = FontWeight.SemiBold
+                style = theme.titleStyle,
             )
 
             item.badge?.let {
@@ -166,7 +151,7 @@ private fun ItemView(item: AccordionItem, toggle: Toggle, theme: AccordionTheme)
                 )
             }
 
-            if (toggle == Toggle.EndArrow) {
+            if (toggle == AccordionTheme.Toggle.EndArrow) {
                 Spacer(Modifier.weight(1f))
                 Icon(
                     painter = painterResource(if (item.isExpanded) R.drawable.ic_chevron_up else R.drawable.ic_chevron_down),
@@ -209,9 +194,9 @@ private fun Preview() {
             Accordion(
                 items = items,
                 modifier = Modifier.fillMaxWidth(),
-                style = Style.BorderedOpen,
-                toggle = Toggle.StartArrow,
-                type = Type.Basic
+                style = AccordionTheme.Style.BorderedOpen,
+                toggle = AccordionTheme.Toggle.StartArrow,
+                type = AccordionTheme.Type.Basic
             )
         }
     }

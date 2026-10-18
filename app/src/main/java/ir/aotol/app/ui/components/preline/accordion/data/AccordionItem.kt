@@ -8,5 +8,5 @@ data class AccordionItem(
     val badge: AccordionBadge? = null,
     val icon: Painter? = null,
     val isExpanded: Boolean = false,
-    val content: @Composable () -> Unit,
+    val content: @Composable () -> Unit
 )

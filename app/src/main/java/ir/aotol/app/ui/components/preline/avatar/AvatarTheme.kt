@@ -2,17 +2,16 @@ package ir.aotol.app.ui.components.preline.avatar
 
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import ir.aotol.app.ui.components.preline.Colors
-import ir.aotol.app.ui.components.preline.avatar.AvatarTheme.Color
-import ir.aotol.app.ui.components.preline.avatar.AvatarTheme.Shape
-import ir.aotol.app.ui.components.preline.avatar.AvatarTheme.Size
-import ir.aotol.app.ui.components.preline.avatar.AvatarTheme.Type
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color as ComposeColor
 import androidx.compose.ui.graphics.Shape as ComposeShape
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import ir.aotol.app.ui.components.preline.Palette
+import ir.aotol.app.ui.components.preline.PrelineTheme
+import ir.aotol.app.ui.components.preline.semiBold
 
 data class AvatarTheme(
     val background: ComposeColor,
@@ -20,7 +19,7 @@ data class AvatarTheme(
     val stroke: ComposeColor,
     val height: Dp,
     val statusSize: Dp,
-    val fontSize: TextUnit,
+    val textStyle: TextStyle,
     val shape: ComposeShape,
 ) {
     sealed interface Color {
@@ -57,138 +56,148 @@ data class AvatarTheme(
     }
 }
 
-internal fun getTheme(type: Type, color: Color, size: Size, shape: Shape): AvatarTheme = AvatarTheme(
+@Composable
+@ReadOnlyComposable
+internal fun getTheme(type: AvatarTheme.Type, color: AvatarTheme.Color, size: AvatarTheme.Size, shape: AvatarTheme.Shape): AvatarTheme = AvatarTheme(
     background = getBackgroundColor(type, color),
     foreground = getForegroundColor(type, color),
     stroke = getStrokeColor(type, color),
     height = getHeight(size),
     statusSize = getStatusSize(size),
-    fontSize = getFontSize(size),
+    textStyle = getTextStyle(size),
     shape = getShape(shape)
 )
 
-private fun getBackgroundColor(type: Type, color: Color): ComposeColor {
+@Composable
+@ReadOnlyComposable
+private fun getBackgroundColor(type: AvatarTheme.Type, color: AvatarTheme.Color): ComposeColor {
     return when (type) {
-        Type.Image   -> when (color) {
-            Color.Image       -> Colors.Theme.Surface.Surface4
-            Color.Placeholder -> Colors.Theme.Surface.Surface4
-            else              -> Colors.Transparent
+        AvatarTheme.Type.Image   -> when (color) {
+            AvatarTheme.Color.Image       -> PrelineTheme.colors.surface4
+            AvatarTheme.Color.Placeholder -> PrelineTheme.colors.surface4
+            else                          -> Palette.Transparent
         }
 
-        Type.Solid   -> when (color) {
-            Color.Image       -> Colors.Theme.Surface.Surface4
-            Color.Placeholder -> Colors.Theme.Surface.Surface4
-            Color.Dark        -> Colors.Theme.Secondary.Secondary
-            Color.Gray        -> Colors.Theme.Surface.Surface4
-            Color.Green       -> Colors.Teal.Teal500
-            Color.Blue        -> Colors.Theme.Default.Primary
-            Color.Yellow      -> Colors.Yellow.Yellow500
-            Color.Red         -> Colors.Red.Red500
-            Color.Light       -> Colors.Theme.Background.BackgroundPlain
-            Color.White       -> Colors.Transparent
+        AvatarTheme.Type.Solid   -> when (color) {
+            AvatarTheme.Color.Image       -> PrelineTheme.colors.surface4
+            AvatarTheme.Color.Placeholder -> PrelineTheme.colors.surface4
+            AvatarTheme.Color.Dark        -> PrelineTheme.colors.secondary
+            AvatarTheme.Color.Gray        -> PrelineTheme.colors.surface4
+            AvatarTheme.Color.Green       -> PrelineTheme.colors.green.solid
+            AvatarTheme.Color.Blue        -> PrelineTheme.colors.primary
+            AvatarTheme.Color.Yellow      -> PrelineTheme.colors.yellow.solid
+            AvatarTheme.Color.Red         -> PrelineTheme.colors.red.solid
+            AvatarTheme.Color.Light       -> Palette.White
+            AvatarTheme.Color.White       -> Palette.Transparent
         }
 
-        Type.Soft    -> when (color) {
-            Color.Image       -> Colors.Theme.Surface.Surface4
-            Color.Placeholder -> Colors.Theme.Surface.Surface4
-            Color.Dark        -> Colors.Theme.Surface.Surface
-            Color.Gray        -> Colors.Theme.Muted.Muted
-            Color.Green       -> Colors.Theme.Accent.Green.Green3
-            Color.Blue        -> Colors.Theme.Accent.Primary.Primary3
-            Color.Yellow      -> Colors.Theme.Accent.Yellow.Yellow3
-            Color.Red         -> Colors.Theme.Accent.Red.Red3
-            Color.Light       -> Colors.White.White10
-            Color.White       -> Colors.Transparent
+        AvatarTheme.Type.Soft    -> when (color) {
+            AvatarTheme.Color.Image       -> PrelineTheme.colors.surface4
+            AvatarTheme.Color.Placeholder -> PrelineTheme.colors.surface4
+            AvatarTheme.Color.Dark        -> PrelineTheme.colors.surface
+            AvatarTheme.Color.Gray        -> PrelineTheme.colors.muted
+            AvatarTheme.Color.Green       -> PrelineTheme.colors.green.soft
+            AvatarTheme.Color.Blue        -> PrelineTheme.colors.blue.soft
+            AvatarTheme.Color.Yellow      -> PrelineTheme.colors.yellow.soft
+            AvatarTheme.Color.Red         -> PrelineTheme.colors.red.soft
+            AvatarTheme.Color.Light       -> Palette.White10
+            AvatarTheme.Color.White       -> Palette.Transparent
         }
 
-        Type.White   -> Colors.Theme.Layer.Layer
-        Type.Outline -> when (color) {
-            Color.Image       -> Colors.Theme.Surface.Surface4
-            Color.Placeholder -> Colors.Theme.Surface.Surface4
-            else              -> Colors.Transparent
+        AvatarTheme.Type.White   -> PrelineTheme.colors.layer
+        AvatarTheme.Type.Outline -> when (color) {
+            AvatarTheme.Color.Image       -> PrelineTheme.colors.surface4
+            AvatarTheme.Color.Placeholder -> PrelineTheme.colors.surface4
+            else                          -> Palette.Transparent
         }
     }
 }
 
-private fun getForegroundColor(type: Type, color: Color): ComposeColor {
+@Composable
+@ReadOnlyComposable
+private fun getForegroundColor(type: AvatarTheme.Type, color: AvatarTheme.Color): ComposeColor {
     return when (type) {
-        Type.Image   -> when (color) {
-            Color.Image       -> Colors.Theme.Foreground.ForegroundInverse
-            Color.Placeholder -> Colors.Theme.Foreground.ForegroundInverse
-            else              -> Colors.Transparent
+        AvatarTheme.Type.Image   -> when (color) {
+            AvatarTheme.Color.Image       -> Palette.White
+            AvatarTheme.Color.Placeholder -> Palette.White
+            else                          -> Palette.Transparent
         }
 
-        Type.Solid   -> when (color) {
-            Color.Image       -> Colors.Theme.Foreground.ForegroundInverse
-            Color.Placeholder -> Colors.Theme.Foreground.ForegroundInverse
-            Color.Dark        -> Colors.Theme.Secondary.SecondaryForeground
-            Color.Gray        -> Colors.Theme.Foreground.ForegroundInverse
-            Color.Green       -> Colors.Theme.Foreground.ForegroundInverse
-            Color.Blue        -> Colors.Theme.Default.PrimaryForeground
-            Color.Yellow      -> Colors.Theme.Foreground.ForegroundInverse
-            Color.Red         -> Colors.Theme.Foreground.ForegroundInverse
-            Color.Light       -> Colors.Theme.Foreground.ForegroundInverse
-            Color.White       -> Colors.Transparent
+        AvatarTheme.Type.Solid   -> when (color) {
+            AvatarTheme.Color.Image       -> Palette.White
+            AvatarTheme.Color.Placeholder -> Palette.White
+            AvatarTheme.Color.Dark        -> PrelineTheme.colors.secondaryForeground
+            AvatarTheme.Color.Gray        -> Palette.White
+            AvatarTheme.Color.Green       -> Palette.White
+            AvatarTheme.Color.Blue        -> PrelineTheme.colors.primaryForeground
+            AvatarTheme.Color.Yellow      -> Palette.White
+            AvatarTheme.Color.Red         -> Palette.White
+            AvatarTheme.Color.Light       -> Palette.White
+            AvatarTheme.Color.White       -> Palette.Transparent
         }
 
-        Type.Soft    -> when (color) {
-            Color.Image       -> Colors.Theme.Foreground.ForegroundInverse
-            Color.Placeholder -> Colors.Theme.Foreground.ForegroundInverse
-            Color.Dark        -> Colors.Theme.Surface.SurfaceForeground
-            Color.Gray        -> Colors.Theme.Muted.MutedForeground1
-            Color.Green       -> Colors.Theme.Accent.Green.Green7
-            Color.Blue        -> Colors.Theme.Accent.Primary.Primary7
-            Color.Yellow      -> Colors.Theme.Accent.Yellow.Yellow7
-            Color.Red         -> Colors.Theme.Accent.Red.Red7
-            Color.Light       -> Colors.Theme.Foreground.ForegroundInverse
-            Color.White       -> Colors.Transparent
+        AvatarTheme.Type.Soft    -> when (color) {
+            AvatarTheme.Color.Image       -> Palette.White
+            AvatarTheme.Color.Placeholder -> Palette.White
+            AvatarTheme.Color.Dark        -> PrelineTheme.colors.surfaceForeground
+            AvatarTheme.Color.Gray        -> PrelineTheme.colors.mutedForeground1
+            AvatarTheme.Color.Green       -> PrelineTheme.colors.green.softForeground
+            AvatarTheme.Color.Blue        -> PrelineTheme.colors.blue.softForeground
+            AvatarTheme.Color.Yellow      -> PrelineTheme.colors.yellow.softForeground
+            AvatarTheme.Color.Red         -> PrelineTheme.colors.red.softForeground
+            AvatarTheme.Color.Light       -> Palette.White
+            AvatarTheme.Color.White       -> Palette.Transparent
         }
 
-        Type.White   -> Colors.Theme.Layer.LayerForeground
-        Type.Outline -> when (color) {
-            Color.Image       -> Colors.Theme.Foreground.ForegroundInverse
-            Color.Placeholder -> Colors.Theme.Foreground.ForegroundInverse
-            Color.Dark        -> Colors.Theme.Foreground.Foreground
-            Color.Gray        -> Colors.Theme.Muted.MutedForeground1
-            Color.Green       -> Colors.Teal.Teal500
-            Color.Blue        -> Colors.Theme.Default.Primary
-            Color.Yellow      -> Colors.Yellow.Yellow500
-            Color.Red         -> Colors.Red.Red500
-            Color.Light       -> Colors.Theme.Foreground.ForegroundInverse
-            Color.White       -> Colors.Transparent
+        AvatarTheme.Type.White   -> PrelineTheme.colors.layerForeground
+        AvatarTheme.Type.Outline -> when (color) {
+            AvatarTheme.Color.Image       -> Palette.White
+            AvatarTheme.Color.Placeholder -> Palette.White
+            AvatarTheme.Color.Dark        -> PrelineTheme.colors.foreground
+            AvatarTheme.Color.Gray        -> PrelineTheme.colors.mutedForeground1
+            AvatarTheme.Color.Green       -> PrelineTheme.colors.green.solid
+            AvatarTheme.Color.Blue        -> PrelineTheme.colors.primary
+            AvatarTheme.Color.Yellow      -> PrelineTheme.colors.yellow.solid
+            AvatarTheme.Color.Red         -> PrelineTheme.colors.red.solid
+            AvatarTheme.Color.Light       -> Palette.White
+            AvatarTheme.Color.White       -> Palette.Transparent
         }
     }
 }
 
-private fun getStrokeColor(type: Type, color: Color): ComposeColor {
+@Composable
+@ReadOnlyComposable
+private fun getStrokeColor(type: AvatarTheme.Type, color: AvatarTheme.Color): ComposeColor {
     return when (type) {
-        Type.Outline -> getForegroundColor(type, color)
-        else         -> Colors.Transparent
+        AvatarTheme.Type.Outline -> getForegroundColor(type, color)
+        else                     -> Palette.Transparent
     }
 }
 
-private fun getStatusSize(size: Size): Dp = when (size) {
-    Size.XS      -> 8.dp
-    Size.Small   -> 12.dp
-    Size.Default -> 14.dp
-    Size.Large   -> 16.dp
+private fun getStatusSize(size: AvatarTheme.Size): Dp = when (size) {
+    AvatarTheme.Size.XS      -> 8.dp
+    AvatarTheme.Size.Small   -> 12.dp
+    AvatarTheme.Size.Default -> 14.dp
+    AvatarTheme.Size.Large   -> 16.dp
 }
 
-private fun getFontSize(size: Size): TextUnit = when (size) {
-    Size.XS      -> 12.sp
-    Size.Small   -> 14.sp
-    Size.Default -> 16.sp
-    Size.Large   -> 20.sp
+@Composable
+@ReadOnlyComposable
+private fun getTextStyle(size: AvatarTheme.Size): TextStyle = when (size) {
+    AvatarTheme.Size.XS      -> PrelineTheme.typography.xs.semiBold
+    AvatarTheme.Size.Small   -> PrelineTheme.typography.sm.semiBold
+    AvatarTheme.Size.Default -> PrelineTheme.typography.base.semiBold
+    AvatarTheme.Size.Large   -> PrelineTheme.typography.xl.semiBold
 }
 
-private fun getHeight(size: Size): Dp = when (size) {
-    Size.XS      -> 24.dp
-    Size.Small   -> 36.dp
-    Size.Default -> 44.dp
-    Size.Large   -> 60.dp
+private fun getHeight(size: AvatarTheme.Size): Dp = when (size) {
+    AvatarTheme.Size.XS      -> 24.dp
+    AvatarTheme.Size.Small   -> 36.dp
+    AvatarTheme.Size.Default -> 44.dp
+    AvatarTheme.Size.Large   -> 60.dp
 }
 
-private fun getShape(shape: Shape): ComposeShape = when (shape) {
-    Shape.Rounded  -> RoundedCornerShape(8.dp)
-    Shape.Circular -> CircleShape
+private fun getShape(shape: AvatarTheme.Shape): ComposeShape = when (shape) {
+    AvatarTheme.Shape.Rounded  -> RoundedCornerShape(8.dp)
+    AvatarTheme.Shape.Circular -> CircleShape
 }

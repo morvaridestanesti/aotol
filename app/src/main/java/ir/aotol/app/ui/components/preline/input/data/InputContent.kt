@@ -8,5 +8,6 @@ data class InputContent(
     val avatarPainter: Painter? = null,
     val text: String? = null,
     val iconEnd: Painter? = null,
-    val divider: Boolean = false
+    val divider: Boolean = false,
+    val onClick: (() -> Unit)? = null,
 )

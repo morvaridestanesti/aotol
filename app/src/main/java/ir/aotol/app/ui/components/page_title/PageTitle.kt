@@ -21,9 +21,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ir.aotol.app.R
-import ir.aotol.app.helperes.invisibleClickable
+import ir.aotol.app.helpers.invisibleClickable
 import ir.aotol.app.ui.components.page_title.data.NavigationItem
-import ir.aotol.app.ui.theme.AotolTheme
+import ir.aotol.app.ui.components.preline.AotolTheme
 import ir.aotol.app.ui.theme.Colors
 
 @Composable

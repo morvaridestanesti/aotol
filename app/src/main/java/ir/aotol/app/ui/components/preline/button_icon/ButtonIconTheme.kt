@@ -2,15 +2,14 @@ package ir.aotol.app.ui.components.preline.button_icon
 
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import ir.aotol.app.ui.components.preline.Colors
-import ir.aotol.app.ui.components.preline.button_icon.ButtonIconTheme.Color
-import ir.aotol.app.ui.components.preline.button_icon.ButtonIconTheme.Size
-import ir.aotol.app.ui.components.preline.button_icon.ButtonIconTheme.State
-import ir.aotol.app.ui.components.preline.button_icon.ButtonIconTheme.Type
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color as ComposeColor
 import androidx.compose.ui.graphics.Shape as ComposeShape
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import ir.aotol.app.ui.components.preline.Palette
+import ir.aotol.app.ui.components.preline.PrelineTheme
 
 data class ButtonIconTheme(
     val background: ComposeColor,
@@ -33,6 +32,11 @@ data class ButtonIconTheme(
         object Red : Color
         object Yellow : Color
         object Light : Color
+    }
+
+    sealed interface Shape {
+        object Rounded : Shape
+        object Circled : Shape
     }
 
     sealed interface Size {
@@ -58,280 +62,277 @@ data class ButtonIconTheme(
     }
 }
 
-internal fun getTheme(type: Type, color: Color, state: State, size: Size): ButtonIconTheme = ButtonIconTheme(
+@Composable
+@ReadOnlyComposable
+internal fun getTheme(type: ButtonIconTheme.Type, color: ButtonIconTheme.Color, state: ButtonIconTheme.State, size: ButtonIconTheme.Size, shape: ButtonIconTheme.Shape): ButtonIconTheme = ButtonIconTheme(
     background = getBackgroundColor(type, color, state),
     foreground = getForegroundColor(type, color, state),
-    stroke = getStrokeColor(type, color),
+    stroke = getStrokeColor(type, color, state),
     height = getHeight(size),
     padding = getContainerPadding(size),
     iconSize = getIconSize(size),
-    shape = RoundedCornerShape(8.dp),
-    badgeBackground = Colors.Theme.Layer.Layer,
-    badgeBorder = Colors.Theme.Layer.LayerBorder,
-    badgeForeground = Colors.Theme.Layer.LayerForeground,
+    shape = if (shape == ButtonIconTheme.Shape.Circled) CircleShape else RoundedCornerShape(8.dp),
+    badgeBackground = PrelineTheme.colors.layer,
+    badgeBorder = PrelineTheme.colors.layerBorder,
+    badgeForeground = PrelineTheme.colors.layerForeground,
     badgeShape = CircleShape
 )
 
-private fun getBackgroundColor(type: Type, color: Color, state: State): ComposeColor {
+@Composable
+@ReadOnlyComposable
+private fun getBackgroundColor(type: ButtonIconTheme.Type, color: ButtonIconTheme.Color, state: ButtonIconTheme.State): ComposeColor {
     return when (type) {
-        Type.Ghost    -> when (color) {
-            Color.Dark   -> when (state) {
-                State.Default  -> Colors.Transparent
-                State.Disabled -> Colors.Transparent
-                State.Focus    -> Colors.Theme.Muted.MutedFocus
-                State.Hover    -> Colors.Theme.Muted.MutedHover
+        ButtonIconTheme.Type.Ghost    -> when (color) {
+            ButtonIconTheme.Color.Dark   -> when (state) {
+                ButtonIconTheme.State.Default, ButtonIconTheme.State.Disabled -> Palette.Transparent
+                ButtonIconTheme.State.Focus                                   -> PrelineTheme.colors.mutedFocus
+                ButtonIconTheme.State.Hover                                   -> PrelineTheme.colors.mutedHover
             }
 
-            Color.Gray   -> when (state) {
-                State.Default  -> Colors.Transparent
-                State.Disabled -> Colors.Transparent
-                State.Focus    -> Colors.Theme.Muted.MutedFocus
-                State.Hover    -> Colors.Theme.Muted.MutedHover
+            ButtonIconTheme.Color.Gray   -> when (state) {
+                ButtonIconTheme.State.Default, ButtonIconTheme.State.Disabled -> Palette.Transparent
+                ButtonIconTheme.State.Focus                                   -> PrelineTheme.colors.mutedFocus
+                ButtonIconTheme.State.Hover                                   -> PrelineTheme.colors.mutedHover
             }
 
-            Color.Green  -> when (state) {
-                State.Default  -> Colors.Transparent
-                State.Disabled -> Colors.Transparent
-                State.Focus    -> Colors.Theme.Accent.Green.Green3
-                State.Hover    -> Colors.Theme.Accent.Green.Green3
+            ButtonIconTheme.Color.Green  -> when (state) {
+                ButtonIconTheme.State.Default, ButtonIconTheme.State.Disabled -> Palette.Transparent
+                ButtonIconTheme.State.Focus                                   -> PrelineTheme.colors.green.soft
+                ButtonIconTheme.State.Hover                                   -> PrelineTheme.colors.green.soft
             }
 
-            Color.Blue   -> when (state) {
-                State.Default  -> Colors.Transparent
-                State.Disabled -> Colors.Transparent
-                State.Focus    -> Colors.Theme.Accent.Primary.Primary3
-                State.Hover    -> Colors.Theme.Accent.Primary.Primary3
+            ButtonIconTheme.Color.Blue   -> when (state) {
+                ButtonIconTheme.State.Default, ButtonIconTheme.State.Disabled -> Palette.Transparent
+                ButtonIconTheme.State.Focus                                   -> PrelineTheme.colors.blue.soft
+                ButtonIconTheme.State.Hover                                   -> PrelineTheme.colors.blue.soft
             }
 
-            Color.Red    -> when (state) {
-                State.Default  -> Colors.Transparent
-                State.Disabled -> Colors.Transparent
-                State.Focus    -> Colors.Theme.Accent.Red.Red3
-                State.Hover    -> Colors.Theme.Accent.Red.Red3
+            ButtonIconTheme.Color.Red    -> when (state) {
+                ButtonIconTheme.State.Default, ButtonIconTheme.State.Disabled -> Palette.Transparent
+                ButtonIconTheme.State.Focus                                   -> PrelineTheme.colors.red.soft
+                ButtonIconTheme.State.Hover                                   -> PrelineTheme.colors.red.soft
             }
 
-            Color.Yellow -> when (state) {
-                State.Default  -> Colors.Transparent
-                State.Disabled -> Colors.Transparent
-                State.Focus    -> Colors.Theme.Accent.Yellow.Yellow3
-                State.Hover    -> Colors.Theme.Accent.Yellow.Yellow3
+            ButtonIconTheme.Color.Yellow -> when (state) {
+                ButtonIconTheme.State.Default, ButtonIconTheme.State.Disabled -> Palette.Transparent
+                ButtonIconTheme.State.Focus                                   -> PrelineTheme.colors.yellow.soft
+                ButtonIconTheme.State.Hover                                   -> PrelineTheme.colors.yellow.soft
             }
 
-            Color.Light  -> when (state) {
-                State.Default  -> Colors.Transparent
-                State.Disabled -> Colors.Transparent
-                State.Focus    -> Colors.White.White10
-                State.Hover    -> Colors.White.White10
+            ButtonIconTheme.Color.Light  -> when (state) {
+                ButtonIconTheme.State.Default, ButtonIconTheme.State.Disabled -> Palette.Transparent
+                ButtonIconTheme.State.Focus                                   -> Palette.White10
+                ButtonIconTheme.State.Hover                                   -> Palette.White10
             }
         }
 
-        Type.Link     -> Colors.Transparent
-        Type.Outlined -> Colors.Transparent
-        Type.Soft     -> when (color) {
-            Color.Dark   -> when (state) {
-                State.Default  -> Colors.Theme.Surface.Surface
-                State.Disabled -> Colors.Theme.Surface.Surface4Disabled
-                State.Focus    -> Colors.Theme.Surface.SurfaceFocus
-                State.Hover    -> Colors.Theme.Surface.SurfaceHover
+        ButtonIconTheme.Type.Link     -> Palette.Transparent
+        ButtonIconTheme.Type.Outlined -> Palette.Transparent
+        ButtonIconTheme.Type.Soft     -> when (color) {
+            ButtonIconTheme.Color.Dark   -> when (state) {
+                ButtonIconTheme.State.Default, ButtonIconTheme.State.Disabled -> PrelineTheme.colors.surface
+                ButtonIconTheme.State.Focus                                   -> PrelineTheme.colors.surfaceFocus
+                ButtonIconTheme.State.Hover                                   -> PrelineTheme.colors.surfaceHover
             }
 
-            Color.Gray   -> when (state) {
-                State.Default  -> Colors.Theme.Surface.Surface
-                State.Disabled -> Colors.Theme.Surface.Surface4Disabled
-                State.Focus    -> Colors.Theme.Surface.SurfaceFocus
-                State.Hover    -> Colors.Theme.Surface.SurfaceHover
+            ButtonIconTheme.Color.Gray   -> when (state) {
+                ButtonIconTheme.State.Default, ButtonIconTheme.State.Disabled -> PrelineTheme.colors.surface
+                ButtonIconTheme.State.Focus                                   -> PrelineTheme.colors.surfaceFocus
+                ButtonIconTheme.State.Hover                                   -> PrelineTheme.colors.surfaceHover
             }
 
-            Color.Green  -> when (state) {
-                State.Default  -> Colors.Theme.Accent.Green.Green3
-                State.Disabled -> Colors.Theme.Accent.Green.Green3Disabled
-                State.Focus    -> Colors.Theme.Accent.Green.Green5
-                State.Hover    -> Colors.Theme.Accent.Green.Green5
+            ButtonIconTheme.Color.Green  -> when (state) {
+                ButtonIconTheme.State.Default, ButtonIconTheme.State.Disabled -> PrelineTheme.colors.green.soft
+                ButtonIconTheme.State.Focus                                   -> PrelineTheme.colors.green.softHover
+                ButtonIconTheme.State.Hover                                   -> PrelineTheme.colors.green.softHover
             }
 
-            Color.Blue   -> when (state) {
-                State.Default  -> Colors.Theme.Accent.Primary.Primary3
-                State.Disabled -> Colors.Theme.Accent.Primary.Primary3DisabledButton
-                State.Focus    -> Colors.Theme.Accent.Primary.Primary5
-                State.Hover    -> Colors.Theme.Accent.Primary.Primary5
+            ButtonIconTheme.Color.Blue   -> when (state) {
+                ButtonIconTheme.State.Default, ButtonIconTheme.State.Disabled -> PrelineTheme.colors.blue.soft
+                ButtonIconTheme.State.Focus                                   -> PrelineTheme.colors.blue.softHover
+                ButtonIconTheme.State.Hover                                   -> PrelineTheme.colors.blue.softHover
             }
 
-            Color.Red    -> when (state) {
-                State.Default  -> Colors.Theme.Accent.Red.Red3
-                State.Disabled -> Colors.Theme.Accent.Red.Red3DisabledButton
-                State.Focus    -> Colors.Theme.Accent.Red.Red5
-                State.Hover    -> Colors.Theme.Accent.Red.Red5
+            ButtonIconTheme.Color.Red    -> when (state) {
+                ButtonIconTheme.State.Default, ButtonIconTheme.State.Disabled -> PrelineTheme.colors.red.soft
+                ButtonIconTheme.State.Focus                                   -> PrelineTheme.colors.red.softHover
+                ButtonIconTheme.State.Hover                                   -> PrelineTheme.colors.red.softHover
             }
 
-            Color.Yellow -> when (state) {
-                State.Default  -> Colors.Theme.Accent.Yellow.Yellow3
-                State.Disabled -> Colors.Theme.Accent.Yellow.Yellow3DisabledButton
-                State.Focus    -> Colors.Theme.Accent.Yellow.Yellow5
-                State.Hover    -> Colors.Theme.Accent.Yellow.Yellow5
+            ButtonIconTheme.Color.Yellow -> when (state) {
+                ButtonIconTheme.State.Default, ButtonIconTheme.State.Disabled -> PrelineTheme.colors.yellow.soft
+                ButtonIconTheme.State.Focus                                   -> PrelineTheme.colors.yellow.softHover
+                ButtonIconTheme.State.Hover                                   -> PrelineTheme.colors.yellow.softHover
             }
 
-            Color.Light  -> when (state) {
-                State.Default  -> Colors.White.White10
-                State.Disabled -> Colors.White.White10Disabled
-                State.Focus    -> Colors.White.White20
-                State.Hover    -> Colors.White.White20
+            ButtonIconTheme.Color.Light  -> when (state) {
+                ButtonIconTheme.State.Default, ButtonIconTheme.State.Disabled -> Palette.White10
+                ButtonIconTheme.State.Focus                                   -> Palette.White20
+                ButtonIconTheme.State.Hover                                   -> Palette.White20
             }
         }
 
-        Type.Solid    -> when (color) {
-            Color.Dark   -> when (state) {
-                State.Default  -> Colors.Theme.Secondary.Secondary
-                State.Disabled -> Colors.Theme.Secondary.SecondaryDisabled
-                State.Focus    -> Colors.Theme.Secondary.SecondaryFocus
-                State.Hover    -> Colors.Theme.Secondary.SecondaryHover
+        ButtonIconTheme.Type.Solid    -> when (color) {
+            ButtonIconTheme.Color.Dark   -> when (state) {
+                ButtonIconTheme.State.Default, ButtonIconTheme.State.Disabled -> PrelineTheme.colors.secondary
+                ButtonIconTheme.State.Focus                                   -> PrelineTheme.colors.secondaryFocus
+                ButtonIconTheme.State.Hover                                   -> PrelineTheme.colors.secondaryHover
             }
 
-            Color.Gray   -> when (state) {
-                State.Default  -> Colors.Theme.Surface.Surface4
-                State.Disabled -> Colors.Theme.Surface.Surface4Disabled
-                State.Focus    -> Colors.Theme.Surface.Surface5
-                State.Hover    -> Colors.Theme.Surface.Surface5
+            ButtonIconTheme.Color.Gray   -> when (state) {
+                ButtonIconTheme.State.Default, ButtonIconTheme.State.Disabled -> PrelineTheme.colors.surface4
+                ButtonIconTheme.State.Focus                                   -> PrelineTheme.colors.surface5
+                ButtonIconTheme.State.Hover                                   -> PrelineTheme.colors.surface5
             }
 
-            Color.Green  -> when (state) {
-                State.Default  -> Colors.Teal.Teal500
-                State.Disabled -> Colors.Teal.Teal500DisabledButton
-                State.Focus    -> Colors.Teal.Teal600
-                State.Hover    -> Colors.Teal.Teal600
+            ButtonIconTheme.Color.Green  -> when (state) {
+                ButtonIconTheme.State.Default, ButtonIconTheme.State.Disabled -> PrelineTheme.colors.green.solid
+                ButtonIconTheme.State.Focus                                   -> PrelineTheme.colors.green.solidHover
+                ButtonIconTheme.State.Hover                                   -> PrelineTheme.colors.green.solidHover
             }
 
-            Color.Blue   -> when (state) {
-                State.Default  -> Colors.Theme.Default.Primary
-                State.Disabled -> Colors.Theme.Default.PrimaryDisabled
-                State.Focus    -> Colors.Theme.Default.PrimaryFocus
-                State.Hover    -> Colors.Theme.Default.PrimaryHover
+            ButtonIconTheme.Color.Blue   -> when (state) {
+                ButtonIconTheme.State.Default, ButtonIconTheme.State.Disabled -> PrelineTheme.colors.primary
+                ButtonIconTheme.State.Focus                                   -> PrelineTheme.colors.primaryFocus
+                ButtonIconTheme.State.Hover                                   -> PrelineTheme.colors.primaryHover
             }
 
-            Color.Red    -> when (state) {
-                State.Default  -> Colors.Red.Red500
-                State.Disabled -> Colors.Red.Red500Disabled
-                State.Focus    -> Colors.Red.Red600
-                State.Hover    -> Colors.Red.Red600
+            ButtonIconTheme.Color.Red    -> when (state) {
+                ButtonIconTheme.State.Default, ButtonIconTheme.State.Disabled -> PrelineTheme.colors.red.solid
+                ButtonIconTheme.State.Focus                                   -> PrelineTheme.colors.red.solidHover
+                ButtonIconTheme.State.Hover                                   -> PrelineTheme.colors.red.solidHover
             }
 
-            Color.Yellow -> when (state) {
-                State.Default  -> Colors.Yellow.Yellow500
-                State.Disabled -> Colors.Yellow.Yellow500Disabled
-                State.Focus    -> Colors.Yellow.Yellow600
-                State.Hover    -> Colors.Yellow.Yellow600
+            ButtonIconTheme.Color.Yellow -> when (state) {
+                ButtonIconTheme.State.Default, ButtonIconTheme.State.Disabled -> PrelineTheme.colors.yellow.solid
+                ButtonIconTheme.State.Focus                                   -> PrelineTheme.colors.yellow.solidHover
+                ButtonIconTheme.State.Hover                                   -> PrelineTheme.colors.yellow.solidHover
             }
 
-            Color.Light  -> when (state) {
-                State.Default  -> Colors.Theme.Background.BackgroundPlain
-                State.Disabled -> Colors.Theme.Background.BackgroundPlainDisabled
-                State.Focus    -> Colors.White.White90
-                State.Hover    -> Colors.White.White90
+            ButtonIconTheme.Color.Light  -> when (state) {
+                ButtonIconTheme.State.Default, ButtonIconTheme.State.Disabled -> Palette.White
+                ButtonIconTheme.State.Focus                                   -> Palette.White90
+                ButtonIconTheme.State.Hover                                   -> Palette.White90
             }
         }
 
-        Type.White    -> Colors.Theme.Layer.Layer
+        ButtonIconTheme.Type.White    -> when (state) {
+            ButtonIconTheme.State.Hover -> PrelineTheme.colors.layerHover
+            ButtonIconTheme.State.Focus -> PrelineTheme.colors.layerFocus
+            else                        -> PrelineTheme.colors.layer
+        }
     }
 }
 
-private fun getForegroundColor(type: Type, color: Color, state: State): ComposeColor {
+@Composable
+@ReadOnlyComposable
+private fun getForegroundColor(type: ButtonIconTheme.Type, color: ButtonIconTheme.Color, state: ButtonIconTheme.State): ComposeColor {
     return when (type) {
-        Type.Ghost    -> when (color) {
-            Color.Dark   -> when (state) {
-                State.Default  -> Colors.Theme.Foreground.Foreground
-                State.Disabled -> Colors.Theme.Foreground.ForegroundDisabled
-                else           -> Colors.Theme.Foreground.Foreground
+        ButtonIconTheme.Type.Ghost    -> when (color) {
+            ButtonIconTheme.Color.Dark   -> when (state) {
+                ButtonIconTheme.State.Default, ButtonIconTheme.State.Disabled -> PrelineTheme.colors.foreground
+                else                                                          -> PrelineTheme.colors.foreground
             }
 
-            Color.Gray   -> when (state) {
-                State.Default  -> Colors.Theme.Muted.MutedForeground1
-                State.Disabled -> Colors.Theme.Muted.MutedForeground1Disabled
-                else           -> Colors.Theme.Muted.MutedForeground1
+            ButtonIconTheme.Color.Gray   -> when (state) {
+                ButtonIconTheme.State.Default, ButtonIconTheme.State.Disabled -> PrelineTheme.colors.mutedForeground1
+                else                                                          -> PrelineTheme.colors.mutedForeground1
             }
 
-            Color.Green  -> Colors.Teal.Teal500
-            Color.Blue   -> Colors.Theme.Default.Primary
-            Color.Red    -> Colors.Red.Red500
-            Color.Yellow -> Colors.Yellow.Yellow500
-            Color.Light  -> when (state) {
-                State.Disabled -> Colors.White.White70
-                else           -> Colors.Theme.Foreground.ForegroundInverse
+            ButtonIconTheme.Color.Green  -> PrelineTheme.colors.green.solid
+            ButtonIconTheme.Color.Blue   -> PrelineTheme.colors.primary
+            ButtonIconTheme.Color.Red    -> PrelineTheme.colors.red.solid
+            ButtonIconTheme.Color.Yellow -> PrelineTheme.colors.yellow.solid
+            ButtonIconTheme.Color.Light  -> when (state) {
+                else           -> Palette.White
             }
         }
 
-        Type.Link     -> when (color) {
-            Color.Dark   -> Colors.Theme.Foreground.Foreground
-            Color.Gray   -> Colors.Theme.Muted.MutedForeground1
-            Color.Green  -> Colors.Teal.Teal500
-            Color.Blue   -> Colors.Theme.Default.Primary
-            Color.Red    -> Colors.Red.Red500
-            Color.Yellow -> Colors.Yellow.Yellow500
-            Color.Light  -> Colors.Theme.Foreground.ForegroundInverse
+        ButtonIconTheme.Type.Link     -> when (color) {
+            ButtonIconTheme.Color.Dark   -> PrelineTheme.colors.foreground
+            ButtonIconTheme.Color.Gray   -> PrelineTheme.colors.mutedForeground1
+            ButtonIconTheme.Color.Green  -> PrelineTheme.colors.green.solid
+            ButtonIconTheme.Color.Blue   -> PrelineTheme.colors.primary
+            ButtonIconTheme.Color.Red    -> PrelineTheme.colors.red.solid
+            ButtonIconTheme.Color.Yellow -> PrelineTheme.colors.yellow.solid
+            ButtonIconTheme.Color.Light  -> Palette.White
         }
 
-        Type.Outlined -> when (color) {
-            Color.Dark   -> Colors.Theme.Foreground.Foreground
-            Color.Gray   -> Colors.Theme.Muted.MutedForeground1
-            Color.Green  -> Colors.Teal.Teal500
-            Color.Blue   -> Colors.Theme.Default.Primary
-            Color.Red    -> Colors.Red.Red500
-            Color.Yellow -> Colors.Yellow.Yellow500
-            Color.Light  -> Colors.Theme.Foreground.ForegroundInverse
+        ButtonIconTheme.Type.Outlined -> when (color) {
+            ButtonIconTheme.Color.Dark   -> PrelineTheme.colors.foreground
+            ButtonIconTheme.Color.Gray   -> PrelineTheme.colors.mutedForeground1
+            ButtonIconTheme.Color.Green  -> PrelineTheme.colors.green.solid
+            ButtonIconTheme.Color.Blue   -> PrelineTheme.colors.primary
+            ButtonIconTheme.Color.Red    -> PrelineTheme.colors.red.solid
+            ButtonIconTheme.Color.Yellow -> PrelineTheme.colors.yellow.solid
+            ButtonIconTheme.Color.Light  -> Palette.White
         }
 
-        Type.Soft     -> when (color) {
-            Color.Dark   -> Colors.Theme.Surface.SurfaceForeground
-            Color.Gray   -> Colors.Theme.Muted.MutedForeground1
-            Color.Green  -> Colors.Theme.Accent.Green.Green7
-            Color.Blue   -> Colors.Theme.Accent.Primary.Primary7
-            Color.Red    -> Colors.Theme.Accent.Red.Red7
-            Color.Yellow -> Colors.Theme.Accent.Yellow.Yellow7
-            Color.Light  -> Colors.Theme.Foreground.ForegroundInverse
+        ButtonIconTheme.Type.Soft     -> when (color) {
+            ButtonIconTheme.Color.Dark   -> PrelineTheme.colors.surfaceForeground
+            ButtonIconTheme.Color.Gray   -> PrelineTheme.colors.mutedForeground1
+            ButtonIconTheme.Color.Green  -> PrelineTheme.colors.green.softForeground
+            ButtonIconTheme.Color.Blue   -> PrelineTheme.colors.blue.softForeground
+            ButtonIconTheme.Color.Red    -> PrelineTheme.colors.red.softForeground
+            ButtonIconTheme.Color.Yellow -> PrelineTheme.colors.yellow.softForeground
+            ButtonIconTheme.Color.Light  -> Palette.White
         }
 
-        Type.Solid    -> when (color) {
-            Color.Dark   -> Colors.Theme.Secondary.SecondaryForeground
-            Color.Gray   -> Colors.Theme.Foreground.ForegroundInverse
-            Color.Green  -> Colors.Theme.Foreground.ForegroundInverse
-            Color.Blue   -> Colors.Theme.Default.PrimaryForeground
-            Color.Red    -> Colors.Theme.Foreground.ForegroundInverse
-            Color.Yellow -> Colors.Theme.Foreground.ForegroundInverse
-            Color.Light  -> Colors.Theme.Background.BackgroundInverse
+        ButtonIconTheme.Type.Solid    -> when (color) {
+            ButtonIconTheme.Color.Dark   -> PrelineTheme.colors.secondaryForeground
+            ButtonIconTheme.Color.Gray   -> Palette.White
+            ButtonIconTheme.Color.Green  -> Palette.White
+            ButtonIconTheme.Color.Blue   -> PrelineTheme.colors.primaryForeground
+            ButtonIconTheme.Color.Red    -> Palette.White
+            ButtonIconTheme.Color.Yellow -> Palette.White
+            ButtonIconTheme.Color.Light  -> Palette.Gray.Gray800
         }
 
-        Type.White    -> Colors.Theme.Layer.LayerForeground
+        ButtonIconTheme.Type.White    -> when (color) {
+            ButtonIconTheme.Color.Dark   -> PrelineTheme.colors.layerForeground
+            ButtonIconTheme.Color.Gray   -> PrelineTheme.colors.mutedForeground1
+            ButtonIconTheme.Color.Green  -> PrelineTheme.colors.green.solid
+            ButtonIconTheme.Color.Blue   -> PrelineTheme.colors.primary
+            ButtonIconTheme.Color.Red    -> PrelineTheme.colors.red.solid
+            ButtonIconTheme.Color.Yellow -> PrelineTheme.colors.yellow.solid
+            ButtonIconTheme.Color.Light  -> Palette.Gray.Gray800
+        }
     }
 }
 
-private fun getStrokeColor(type: Type, color: Color): ComposeColor {
+@Composable
+@ReadOnlyComposable
+private fun getStrokeColor(type: ButtonIconTheme.Type, color: ButtonIconTheme.Color, state: ButtonIconTheme.State): ComposeColor {
     return when (type) {
-        Type.Outlined -> when (color) {
-            Color.Dark   -> Colors.Theme.Border.Border8
-            Color.Gray   -> Colors.Theme.Border.Border5
-            Color.Green  -> Colors.Teal.Teal500
-            Color.Blue   -> Colors.Theme.Default.Primary
-            Color.Red    -> Colors.Red.Red500
-            Color.Yellow -> Colors.Yellow.Yellow500
-            Color.Light  -> Colors.Theme.Border.BorderInverse
+        ButtonIconTheme.Type.Outlined -> when (color) {
+            ButtonIconTheme.Color.Dark   -> PrelineTheme.colors.borderLine8
+            ButtonIconTheme.Color.Gray   -> PrelineTheme.colors.borderLine5
+            ButtonIconTheme.Color.Green  -> PrelineTheme.colors.green.solid
+            ButtonIconTheme.Color.Blue   -> PrelineTheme.colors.primary
+            ButtonIconTheme.Color.Red    -> PrelineTheme.colors.red.solid
+            ButtonIconTheme.Color.Yellow -> PrelineTheme.colors.yellow.solid
+            ButtonIconTheme.Color.Light  -> Palette.White
         }
 
-        else          -> Colors.Transparent
+        ButtonIconTheme.Type.White    -> PrelineTheme.colors.layerBorder
+        else                          -> Palette.Transparent
     }
 }
 
-private fun getHeight(size: Size): Dp = when (size) {
-    Size.Large   -> 60.dp
-    Size.Default -> 44.dp
-    Size.Small   -> 36.dp
+private fun getHeight(size: ButtonIconTheme.Size): Dp = when (size) {
+    ButtonIconTheme.Size.Large   -> 60.dp
+    ButtonIconTheme.Size.Default -> 44.dp
+    ButtonIconTheme.Size.Small   -> 36.dp
 }
 
-private fun getContainerPadding(size: Size): Dp = when (size) {
-    Size.Large   -> 16.dp
-    Size.Default -> 12.dp
-    Size.Small   -> 10.dp
+private fun getContainerPadding(size: ButtonIconTheme.Size): Dp = when (size) {
+    ButtonIconTheme.Size.Large   -> 16.dp
+    ButtonIconTheme.Size.Default -> 12.dp
+    ButtonIconTheme.Size.Small   -> 10.dp
 }
 
-private fun getIconSize(size: Size): Dp = when (size) {
-    Size.Large   -> 24.dp
-    Size.Default -> 20.dp
-    Size.Small   -> 16.dp
+private fun getIconSize(size: ButtonIconTheme.Size): Dp = when (size) {
+    ButtonIconTheme.Size.Large   -> 24.dp
+    ButtonIconTheme.Size.Default -> 20.dp
+    ButtonIconTheme.Size.Small   -> 16.dp
 }

@@ -1,13 +1,16 @@
 package ir.aotol.app.ui.components.preline.accordion
 
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import ir.aotol.app.ui.components.preline.Colors
+import ir.aotol.app.ui.components.preline.Palette
+import ir.aotol.app.ui.components.preline.PrelineTheme
+import ir.aotol.app.ui.components.preline.semiBold
 
 data class AccordionTheme(
     val borderColor: Color,
@@ -15,7 +18,7 @@ data class AccordionTheme(
     val expandedTitleColor: Color,
     val shape: Shape,
     val iconSize: Dp,
-    val titleFontSize: TextUnit,
+    val titleStyle: TextStyle,
 ) {
     sealed interface Style {
         object Normal : Style
@@ -36,18 +39,24 @@ data class AccordionTheme(
     }
 }
 
+@Composable
+@ReadOnlyComposable
 internal fun getTheme(style: AccordionTheme.Style, isExpanded: Boolean): AccordionTheme = AccordionTheme(
     borderColor = getBorderColor(style),
     titleColor = getTitleColor(isExpanded),
-    expandedTitleColor = Colors.Theme.Default.Primary,
+    expandedTitleColor = PrelineTheme.colors.primary,
     shape = RoundedCornerShape(12.dp),
     iconSize = 16.dp,
-    titleFontSize = 14.sp
+    titleStyle = PrelineTheme.typography.sm.semiBold
 )
 
+@Composable
+@ReadOnlyComposable
 private fun getBorderColor(style: AccordionTheme.Style): Color = when (style) {
-    AccordionTheme.Style.Bordered, AccordionTheme.Style.BorderedOpen -> Colors.Theme.Layer.LayerBorder
-    else                                                             -> Colors.Transparent
+    AccordionTheme.Style.Bordered, AccordionTheme.Style.BorderedOpen -> PrelineTheme.colors.layerBorder
+    else                                                             -> Palette.Transparent
 }
 
-private fun getTitleColor(isExpanded: Boolean): Color = if (isExpanded) Colors.Theme.Default.Primary else Colors.Theme.Foreground.Foreground
+@Composable
+@ReadOnlyComposable
+private fun getTitleColor(isExpanded: Boolean): Color = if (isExpanded) PrelineTheme.colors.primary else PrelineTheme.colors.foreground

@@ -1,22 +1,24 @@
 package ir.aotol.app.ui.components.preline.checkbox
 
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import ir.aotol.app.ui.components.preline.Colors
-import ir.aotol.app.ui.components.preline.checkbox.CheckBoxTheme.Size
-import ir.aotol.app.ui.components.preline.checkbox.CheckBoxTheme.State
-import ir.aotol.app.ui.components.preline.checkbox.CheckBoxTheme.Style
-import ir.aotol.app.ui.components.preline.checkbox.CheckBoxTheme.Type
+import ir.aotol.app.ui.components.preline.AccentColors
+import ir.aotol.app.ui.components.preline.Palette
+import ir.aotol.app.ui.components.preline.PrelineTheme
 
-data class CheckBoxTheme(
+data class CheckboxTheme(
     val cardBackground: Color,
     val cardBorder: Color,
     val checkboxBackground: Color,
     val checkboxForeground: Color,
     val checkboxStroke: Color,
+    val focusRingColor: Color,
     val labelColor: Color,
     val secondaryLabelColor: Color,
     val iconTint: Color,
@@ -53,134 +55,105 @@ data class CheckBoxTheme(
     }
 }
 
-internal fun getTheme(checked: Boolean, type: Type, style: Style, state: State, size: Size): CheckBoxTheme = CheckBoxTheme(
-    cardBackground = if (state == State.Disabled) Colors.Theme.Muted.Muted else Colors.Theme.Layer.Layer,
-    cardBorder = if (style == Style.WithinInput) Colors.Theme.Layer.LayerBorder else Colors.Transparent,
+@Composable
+@ReadOnlyComposable
+internal fun getTheme(checked: Boolean, type: CheckboxTheme.Type, style: CheckboxTheme.Style, state: CheckboxTheme.State, size: CheckboxTheme.Size): CheckboxTheme = CheckboxTheme(
+    cardBackground = when {
+        style != CheckboxTheme.Style.WithinInput -> Palette.Transparent
+        state == CheckboxTheme.State.Disabled    -> PrelineTheme.colors.muted
+        else                                     -> PrelineTheme.colors.layer
+    },
+    cardBorder = if (style == CheckboxTheme.Style.WithinInput) PrelineTheme.colors.layerBorder else Palette.Transparent,
     checkboxBackground = getCheckboxBackgroundColor(checked, type, state),
-    checkboxForeground = getCheckboxForegroundColor(checked, type, state),
-    checkboxStroke = getCheckboxStrokeColor(checked, type, state),
-    labelColor = getLabelColor(state),
-    secondaryLabelColor = getSecondaryLabelColor(state),
-    iconTint = Colors.Theme.Muted.MutedForeground1,
+    checkboxForeground = getCheckboxForegroundColor(type, state),
+    checkboxStroke = getCheckboxStrokeColor(checked, state),
+    focusRingColor = PrelineTheme.colors.blue.softHover,
+    labelColor = getLabelColor(state, PrelineTheme.colors.foreground),
+    secondaryLabelColor = getLabelColor(state, PrelineTheme.colors.mutedForeground1),
+    iconTint = PrelineTheme.colors.mutedForeground1,
     rowPadding = getRowPadding(style, size),
-    checkboxSize = getCheckboxSize(state, style, size),
+    checkboxSize = getCheckboxSize(style, size),
     checkboxIconSize = getCheckboxIconSize(size, style),
     iconSize = getIconSize(size),
-    shape = RoundedCornerShape(8.dp),
+    // Plain has no box; a rounded shape would clip the control sitting in its corner.
+    shape = if (style == CheckboxTheme.Style.WithinInput) RoundedCornerShape(8.dp) else RectangleShape,
     checkboxShape = RoundedCornerShape(4.dp)
 )
 
-private fun getRowPadding(style: Style, size: Size) = when (style) {
-    Style.Plain       -> 0.dp
-    Style.WithinInput -> when (size) {
-        Size.Small   -> 10.dp
-        Size.Default -> 16.dp
-        Size.Large   -> 22.dp
+private fun getRowPadding(style: CheckboxTheme.Style, size: CheckboxTheme.Size) = when (style) {
+    CheckboxTheme.Style.Plain       -> 0.dp
+    CheckboxTheme.Style.WithinInput -> when (size) {
+        CheckboxTheme.Size.Small   -> 10.dp
+        CheckboxTheme.Size.Default -> 16.dp
+        CheckboxTheme.Size.Large   -> 22.dp
+    }
+
+    else              -> 0.dp
+}
+
+private fun getCheckboxSize(style: CheckboxTheme.Style, size: CheckboxTheme.Size) = when (style) {
+    CheckboxTheme.Style.Plain -> 20.dp
+    else                      -> when (size) {
+        CheckboxTheme.Size.Small   -> 16.dp
+        CheckboxTheme.Size.Default -> 20.dp
+        CheckboxTheme.Size.Large   -> 24.dp
     }
 }
 
-private fun getCheckboxSize(state: State, style: Style, size: Size) = when (style) {
-    Style.Plain -> if (state == State.Focus) 24.dp else 20.dp
-    else        -> when (size) {
-        Size.Small   -> if (state == State.Focus) 20.dp else 16.dp
-        Size.Default -> if (state == State.Focus) 24.dp else 20.dp
-        Size.Large   -> if (state == State.Focus) 28.dp else 24.dp
+private fun getCheckboxIconSize(size: CheckboxTheme.Size, style: CheckboxTheme.Style) = when (style) {
+    CheckboxTheme.Style.Plain -> 12.dp
+    else                      -> when (size) {
+        CheckboxTheme.Size.Small   -> 10.dp
+        CheckboxTheme.Size.Default -> 12.dp
+        CheckboxTheme.Size.Large   -> 14.dp
     }
 }
 
-private fun getCheckboxIconSize(size: Size, style: Style) = when (style) {
-    Style.Plain -> 12.dp
-    else        -> when (size) {
-        Size.Small   -> 10.dp
-        Size.Default -> 12.dp
-        Size.Large   -> 14.dp
-    }
+private fun getIconSize(size: CheckboxTheme.Size) = when (size) {
+    CheckboxTheme.Size.Small   -> 16.dp
+    CheckboxTheme.Size.Default -> 20.dp
+    CheckboxTheme.Size.Large   -> 24.dp
 }
 
-private fun getIconSize(size: Size) = when (size) {
-    Size.Small   -> 16.dp
-    Size.Default -> 20.dp
-    Size.Large   -> 24.dp
+// Validation states tint the control; every other state uses the primary blue.
+@Composable
+@ReadOnlyComposable
+private fun getAccent(state: CheckboxTheme.State): AccentColors = when (state) {
+    CheckboxTheme.State.Success -> PrelineTheme.colors.green
+    CheckboxTheme.State.Invalid -> PrelineTheme.colors.red
+    else                        -> PrelineTheme.colors.blue
 }
 
-private fun getCheckboxBackgroundColor(checked: Boolean, type: Type, state: State): Color {
-    return when (type) {
-        Type.Solid -> when (state) {
-            State.Default       -> if (checked) Colors.Theme.Default.Primary else Colors.Theme.Layer.Layer
-            State.Indeterminate -> Colors.Theme.Default.Primary
-            State.Focus         -> Colors.Theme.Default.Primary
-            State.Disabled      -> if (checked) Colors.Solid.PlainCheckDisabled else Colors.Theme.Layer.Layer
-            State.Invalid       -> Colors.Transparent
-            State.Success       -> Colors.Teal.Teal500
-        }
-
-        Type.Soft  -> when (state) {
-            State.Default       -> if (checked) Colors.Theme.Accent.Primary.Primary4 else Colors.Theme.Layer.Layer
-            State.Indeterminate -> Colors.Theme.Accent.Primary.Primary4
-            State.Focus         -> Colors.Theme.Accent.Primary.Primary4
-            State.Disabled      -> if (checked) Colors.Theme.Accent.Primary.Primary4 else Colors.Theme.Layer.Layer
-            State.Invalid       -> Colors.Theme.Layer.Layer
-            State.Success       -> Colors.Theme.Accent.Green.Green4
-        }
-    }
+@Composable
+@ReadOnlyComposable
+private fun getLabelColor(state: CheckboxTheme.State, default: Color): Color = when (state) {
+    CheckboxTheme.State.Success, CheckboxTheme.State.Invalid -> getAccent(state).solid
+    else                                                     -> default
 }
 
-private fun getCheckboxForegroundColor(checked: Boolean, type: Type, state: State): Color {
-    return when (type) {
-        Type.Solid -> when (state) {
-            State.Default       -> if (checked) Colors.Theme.Default.PrimaryForeground else Colors.Theme.Layer.Layer
-            State.Indeterminate -> Colors.Theme.Default.PrimaryForeground
-            State.Focus         -> Colors.Theme.Default.PrimaryForeground
-            State.Disabled      -> if (checked) Colors.Theme.Default.PrimaryForeground else Colors.Theme.Layer.Layer
-            State.Invalid       -> Colors.Transparent
-            State.Success       -> Colors.Theme.Foreground.ForegroundInverse
-        }
-
-        Type.Soft  -> when (state) {
-            State.Default       -> if (checked) Colors.Theme.Default.Primary else Colors.Theme.Layer.Layer
-            State.Indeterminate -> Colors.Theme.Default.Primary
-            State.Focus         -> Colors.Theme.Default.Primary
-            State.Disabled      -> Colors.Theme.Foreground.ForegroundDisabled
-            State.Invalid       -> Colors.Theme.Layer.Layer
-            State.Success       -> Colors.Teal.Teal500
-        }
-    }
+@Composable
+@ReadOnlyComposable
+private fun getCheckboxBackgroundColor(checked: Boolean, type: CheckboxTheme.Type, state: CheckboxTheme.State): Color = when {
+    !isFilled(checked, state)        -> PrelineTheme.colors.layer
+    type == CheckboxTheme.Type.Solid -> getAccent(state).solid
+    else                             -> getAccent(state).soft
 }
 
-private fun getCheckboxStrokeColor(checked: Boolean, type: Type, state: State): Color {
-    return when (type) {
-        Type.Solid -> when (state) {
-            State.Default       -> if (checked) Colors.Theme.Default.Primary else Colors.Theme.Layer.LayerBorder
-            State.Indeterminate -> Colors.Theme.Default.Primary
-            State.Focus         -> Colors.Theme.Default.Primary
-            State.Disabled      -> if (checked) Colors.Solid.PlainCheckDisabled else Colors.Theme.Layer.LayerBorder
-            State.Invalid       -> Colors.Theme.Destructive.Destructive
-            State.Success       -> Colors.Teal.Teal500
-        }
-
-        Type.Soft  -> when (state) {
-            State.Default       -> Colors.Theme.Layer.LayerBorder
-            State.Indeterminate -> Colors.Theme.Default.Primary
-            State.Focus         -> Colors.Theme.Default.Primary
-            State.Disabled      -> Colors.Theme.Layer.LayerBorder
-            State.Invalid       -> Colors.Theme.Destructive.Destructive
-            State.Success       -> Colors.Teal.Teal500
-        }
-    }
+// The check, minus or dot drawn inside the control.
+@Composable
+@ReadOnlyComposable
+private fun getCheckboxForegroundColor(type: CheckboxTheme.Type, state: CheckboxTheme.State): Color = when (type) {
+    CheckboxTheme.Type.Solid -> Palette.White
+    CheckboxTheme.Type.Soft  -> getAccent(state).solid
 }
 
-private fun getLabelColor(state: State): Color {
-    return when (state) {
-        State.Disabled               -> Colors.Theme.Foreground.ForegroundDisabled
-        State.Invalid, State.Success -> Colors.Theme.Surface.Surface
-        else                         -> Colors.Theme.Foreground.Foreground
-    }
+@Composable
+@ReadOnlyComposable
+private fun getCheckboxStrokeColor(checked: Boolean, state: CheckboxTheme.State): Color = when {
+    isFilled(checked, state)                                                     -> getAccent(state).solid
+    state == CheckboxTheme.State.Success || state == CheckboxTheme.State.Invalid -> getAccent(state).solid
+    else                                                                         -> PrelineTheme.colors.layerBorder
 }
 
-private fun getSecondaryLabelColor(state: State): Color {
-    return when (state) {
-        State.Disabled               -> Colors.Theme.Foreground.ForegroundDisabled
-        State.Invalid, State.Success -> Colors.Theme.Surface.Surface
-        else                         -> Colors.Theme.Foreground.Foreground
-    }
-}
+// Indeterminate shows a minus, so it is filled like a checked box.
+private fun isFilled(checked: Boolean, state: CheckboxTheme.State) = checked || state == CheckboxTheme.State.Indeterminate

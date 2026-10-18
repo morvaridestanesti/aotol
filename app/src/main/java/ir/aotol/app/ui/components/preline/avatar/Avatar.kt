@@ -16,18 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import ir.aotol.app.R
-import ir.aotol.app.ui.components.preline.Colors
-import ir.aotol.app.ui.components.preline.avatar.AvatarTheme.Color
-import ir.aotol.app.ui.components.preline.avatar.AvatarTheme.Shape
-import ir.aotol.app.ui.components.preline.avatar.AvatarTheme.Size
-import ir.aotol.app.ui.components.preline.avatar.AvatarTheme.Type
+import ir.aotol.app.ui.components.preline.PrelineTheme
 
 @Composable
 fun Avatar(
@@ -36,15 +30,14 @@ fun Avatar(
     imagePainter: Painter? = null,
     placeholder: String? = null,
     statusIcon: Painter? = null,
-    internalPadding: Dp = 0.dp,
-    type: Type = Type.Image,
-    color: Color = Color.Image,
-    size: Size = Size.XS,
-    shape: Shape = Shape.Rounded,
+    type: AvatarTheme.Type = AvatarTheme.Type.Image,
+    color: AvatarTheme.Color = AvatarTheme.Color.Image,
+    size: AvatarTheme.Size = AvatarTheme.Size.XS,
+    shape: AvatarTheme.Shape = AvatarTheme.Shape.Rounded,
 ) {
     val theme = getTheme(type, color, size, shape)
     Box(modifier = Modifier.size(theme.height)) {
-        val padding = if (shape == Shape.Rounded) theme.statusSize / 2 else 0.dp
+        val padding = if (shape == AvatarTheme.Shape.Rounded) theme.statusSize / 2 else 0.dp
         Card(
             modifier = modifier
                 .size(theme.height)
@@ -53,7 +46,7 @@ fun Avatar(
             border = BorderStroke(1.dp, theme.stroke),
             elevation = CardDefaults.cardElevation(0.dp),
             shape = theme.shape
-        ) { Content(imagePainter, imageUrl, placeholder, theme, internalPadding) }
+        ) { Content(imagePainter, imageUrl, placeholder, theme) }
         if (statusIcon != null) {
             Icon(
                 painter = statusIcon,
@@ -61,7 +54,7 @@ fun Avatar(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .size(theme.statusSize),
-                tint = Colors.Theme.Default.Primary
+                tint = PrelineTheme.colors.primary
             )
         }
     }
@@ -72,13 +65,10 @@ private fun Content(
     imagePainter: Painter?,
     imageUrl: String?,
     placeholder: String?,
-    avatarTheme: AvatarTheme,
-    internalPadding: Dp
+    theme: AvatarTheme,
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(internalPadding),
+        modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         when {
@@ -103,10 +93,9 @@ private fun Content(
             placeholder != null  -> {
                 Text(
                     text = getInitials(placeholder),
-                    color = avatarTheme.foreground,
+                    color = theme.foreground,
                     textAlign = TextAlign.Center,
-                    fontSize = avatarTheme.fontSize,
-                    fontWeight = FontWeight.SemiBold
+                    style = theme.textStyle,
                 )
             }
         }
@@ -128,12 +117,13 @@ private fun getInitials(name: String): String {
 private fun AvatarPreview() {
     Avatar(
         placeholder = "Preline",
-        size = Size.Default,
+        size = AvatarTheme.Size.Default,
         modifier = Modifier,
         imageUrl = null,
-        imagePainter = painterResource(R.drawable.aotol),
-        color = Color.Green,
-        shape = Shape.Circular,
-        type = Type.Solid
+        imagePainter = null,
+        statusIcon = painterResource(R.drawable.ic_status),
+        type = AvatarTheme.Type.Outline,
+        color = AvatarTheme.Color.Green,
+        shape = AvatarTheme.Shape.Circular,
     )
 }

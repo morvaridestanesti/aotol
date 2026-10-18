@@ -1,9 +1,10 @@
-package ir.aotol.app.ui.theme
+package ir.aotol.app.ui.components.preline
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import ir.aotol.app.ui.theme.AppFont
 
 // Set of Material typography styles to start with
 val Typography = Typography(

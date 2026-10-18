@@ -25,7 +25,7 @@ import androidx.navigation.compose.rememberNavController
 import ir.aotol.app.R
 import ir.aotol.app.ui.components.preline.spinner.Spinner
 import ir.aotol.app.ui.components.preline.spinner.SpinnerTheme
-import ir.aotol.app.ui.theme.AotolTheme
+import ir.aotol.app.ui.components.preline.AotolTheme
 
 @Composable
 fun SplashPage(navController: NavController) {

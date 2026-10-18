@@ -2,15 +2,14 @@ package ir.aotol.app.ui.components.preline.badge
 
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import ir.aotol.app.ui.components.preline.Colors
-import ir.aotol.app.ui.components.preline.badge.BadgeTheme.Color
-import ir.aotol.app.ui.components.preline.badge.BadgeTheme.Shape
-import ir.aotol.app.ui.components.preline.badge.BadgeTheme.Size
-import ir.aotol.app.ui.components.preline.badge.BadgeTheme.Type
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color as ComposeColor
 import androidx.compose.ui.graphics.Shape as ComposeShape
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import ir.aotol.app.ui.components.preline.Palette
+import ir.aotol.app.ui.components.preline.PrelineTheme
 
 data class BadgeTheme(
     val background: ComposeColor,
@@ -18,6 +17,7 @@ data class BadgeTheme(
     val stroke: ComposeColor,
     val closeIconBackground: ComposeColor,
     val closeIconForegroundColor: ComposeColor,
+    val height: Dp,
     val containerHorizontalPadding: Dp,
     val containerVerticalPadding: Dp,
     val avatarSize: Dp,
@@ -56,12 +56,15 @@ data class BadgeTheme(
     }
 }
 
-internal fun getTheme(type: Type, color: Color, size: Size, shape: Shape): BadgeTheme = BadgeTheme(
+@Composable
+@ReadOnlyComposable
+internal fun getTheme(type: BadgeTheme.Type, color: BadgeTheme.Color, size: BadgeTheme.Size, shape: BadgeTheme.Shape): BadgeTheme = BadgeTheme(
     background = getBackgroundColor(type, color),
     foregroundColor = getForegroundColor(type, color),
     stroke = getStrokeColor(type, color),
     closeIconBackground = getCloseIconBackgroundColor(type, color),
     closeIconForegroundColor = getCloseIconForegroundColor(type, color),
+    height = getHeight(size),
     containerHorizontalPadding = getContainerPadding(size, true),
     containerVerticalPadding = getContainerPadding(size, false),
     avatarSize = getAvatarSize(size),
@@ -71,231 +74,247 @@ internal fun getTheme(type: Type, color: Color, size: Size, shape: Shape): Badge
     shape = getShape(shape)
 )
 
-private fun getBackgroundColor(type: Type, color: Color): ComposeColor {
+@Composable
+@ReadOnlyComposable
+private fun getBackgroundColor(type: BadgeTheme.Type, color: BadgeTheme.Color): ComposeColor {
     return when (type) {
-        Type.White    -> Colors.Theme.Layer.Layer
+        BadgeTheme.Type.White    -> PrelineTheme.colors.layer
 
-        Type.Outlined -> when (color) {
-            Color.White  -> Colors.Theme.Layer.Layer
-            Color.Dark   -> Colors.Transparent
-            Color.Gray   -> Colors.Transparent
-            Color.Green  -> Colors.Transparent
-            Color.Blue   -> Colors.Transparent
-            Color.Red    -> Colors.Transparent
-            Color.Yellow -> Colors.Transparent
-            Color.Light  -> Colors.Transparent
+        BadgeTheme.Type.Outlined -> when (color) {
+            BadgeTheme.Color.White  -> PrelineTheme.colors.layer
+            BadgeTheme.Color.Dark   -> Palette.Transparent
+            BadgeTheme.Color.Gray   -> Palette.Transparent
+            BadgeTheme.Color.Green  -> Palette.Transparent
+            BadgeTheme.Color.Blue   -> Palette.Transparent
+            BadgeTheme.Color.Red    -> Palette.Transparent
+            BadgeTheme.Color.Yellow -> Palette.Transparent
+            BadgeTheme.Color.Light  -> Palette.Transparent
         }
 
-        Type.Soft     -> when (color) {
-            Color.White  -> Colors.Theme.Layer.Layer
-            Color.Dark   -> Colors.Theme.Surface.Surface
-            Color.Gray   -> Colors.Theme.Muted.Muted
-            Color.Green  -> Colors.Theme.Accent.Green.Green3
-            Color.Blue   -> Colors.Theme.Accent.Primary.Primary3
-            Color.Red    -> Colors.Theme.Accent.Red.Red3
-            Color.Yellow -> Colors.Theme.Accent.Yellow.Yellow3
-            Color.Light  -> Colors.White.White10
+        BadgeTheme.Type.Soft     -> when (color) {
+            BadgeTheme.Color.White  -> PrelineTheme.colors.layer
+            BadgeTheme.Color.Dark   -> PrelineTheme.colors.surface
+            BadgeTheme.Color.Gray   -> PrelineTheme.colors.muted
+            BadgeTheme.Color.Green  -> PrelineTheme.colors.green.soft
+            BadgeTheme.Color.Blue   -> PrelineTheme.colors.blue.soft
+            BadgeTheme.Color.Red    -> PrelineTheme.colors.red.soft
+            BadgeTheme.Color.Yellow -> PrelineTheme.colors.yellow.soft
+            BadgeTheme.Color.Light  -> Palette.White10
         }
 
-        Type.Solid    -> when (color) {
-            Color.White  -> Colors.Theme.Layer.Layer
-            Color.Dark   -> Colors.Theme.Secondary.Secondary
-            Color.Gray   -> Colors.Theme.Surface.Surface4
-            Color.Green  -> Colors.Teal.Teal500
-            Color.Blue   -> Colors.Theme.Default.Primary
-            Color.Red    -> Colors.Red.Red500
-            Color.Yellow -> Colors.Yellow.Yellow500
-            Color.Light  -> Colors.Theme.Background.BackgroundPlain
+        BadgeTheme.Type.Solid    -> when (color) {
+            BadgeTheme.Color.White  -> PrelineTheme.colors.layer
+            BadgeTheme.Color.Dark   -> PrelineTheme.colors.secondary
+            BadgeTheme.Color.Gray   -> PrelineTheme.colors.surface4
+            BadgeTheme.Color.Green  -> PrelineTheme.colors.green.solid
+            BadgeTheme.Color.Blue   -> PrelineTheme.colors.primary
+            BadgeTheme.Color.Red    -> PrelineTheme.colors.red.solid
+            BadgeTheme.Color.Yellow -> PrelineTheme.colors.yellow.solid
+            BadgeTheme.Color.Light  -> Palette.White
         }
     }
 }
 
-private fun getForegroundColor(type: Type, color: Color): ComposeColor {
+@Composable
+@ReadOnlyComposable
+private fun getForegroundColor(type: BadgeTheme.Type, color: BadgeTheme.Color): ComposeColor {
     return when (type) {
-        Type.White    -> Colors.Theme.Layer.LayerForeground
+        BadgeTheme.Type.White    -> PrelineTheme.colors.layerForeground
 
-        Type.Outlined -> when (color) {
-            Color.White  -> Colors.Theme.Layer.LayerForeground
-            Color.Dark   -> Colors.Theme.Foreground.Foreground
-            Color.Gray   -> Colors.Theme.Muted.MutedForeground1
-            Color.Green  -> Colors.Teal.Teal500
-            Color.Blue   -> Colors.Theme.Default.Primary
-            Color.Red    -> Colors.Red.Red500
-            Color.Yellow -> Colors.Yellow.Yellow500
-            Color.Light  -> Colors.Theme.Foreground.ForegroundInverse
+        BadgeTheme.Type.Outlined -> when (color) {
+            BadgeTheme.Color.White  -> PrelineTheme.colors.layerForeground
+            BadgeTheme.Color.Dark   -> PrelineTheme.colors.foreground
+            BadgeTheme.Color.Gray   -> PrelineTheme.colors.mutedForeground1
+            BadgeTheme.Color.Green  -> PrelineTheme.colors.green.solid
+            BadgeTheme.Color.Blue   -> PrelineTheme.colors.primary
+            BadgeTheme.Color.Red    -> PrelineTheme.colors.red.solid
+            BadgeTheme.Color.Yellow -> PrelineTheme.colors.yellow.solid
+            BadgeTheme.Color.Light  -> Palette.White
         }
 
-        Type.Soft     -> when (color) {
-            Color.White  -> Colors.Theme.Layer.LayerForeground
-            Color.Dark   -> Colors.Theme.Surface.SurfaceForeground
-            Color.Gray   -> Colors.Theme.Muted.MutedForeground1
-            Color.Green  -> Colors.Theme.Accent.Green.Green7
-            Color.Blue   -> Colors.Theme.Accent.Primary.Primary7
-            Color.Red    -> Colors.Theme.Accent.Red.Red7
-            Color.Yellow -> Colors.Theme.Accent.Yellow.Yellow7
-            Color.Light  -> Colors.Theme.Foreground.ForegroundInverse
+        BadgeTheme.Type.Soft     -> when (color) {
+            BadgeTheme.Color.White  -> PrelineTheme.colors.layerForeground
+            BadgeTheme.Color.Dark   -> PrelineTheme.colors.surfaceForeground
+            BadgeTheme.Color.Gray   -> PrelineTheme.colors.mutedForeground1
+            BadgeTheme.Color.Green  -> PrelineTheme.colors.green.softForeground
+            BadgeTheme.Color.Blue   -> PrelineTheme.colors.blue.softForeground
+            BadgeTheme.Color.Red    -> PrelineTheme.colors.red.softForeground
+            BadgeTheme.Color.Yellow -> PrelineTheme.colors.yellow.softForeground
+            BadgeTheme.Color.Light  -> Palette.White
         }
 
-        Type.Solid    -> when (color) {
-            Color.White  -> Colors.Theme.Layer.LayerForeground
-            Color.Dark   -> Colors.Theme.Secondary.SecondaryForeground
-            Color.Gray   -> Colors.Theme.Foreground.ForegroundInverse
-            Color.Green  -> Colors.Theme.Foreground.ForegroundInverse
-            Color.Blue   -> Colors.Theme.Default.PrimaryForeground
-            Color.Red    -> Colors.Theme.Foreground.ForegroundInverse
-            Color.Yellow -> Colors.Theme.Foreground.ForegroundInverse
-            Color.Light  -> Colors.Theme.Foreground.ForegroundInverse
+        BadgeTheme.Type.Solid    -> when (color) {
+            BadgeTheme.Color.White  -> PrelineTheme.colors.layerForeground
+            BadgeTheme.Color.Dark   -> PrelineTheme.colors.secondaryForeground
+            BadgeTheme.Color.Gray   -> Palette.White
+            BadgeTheme.Color.Green  -> Palette.White
+            BadgeTheme.Color.Blue   -> PrelineTheme.colors.primaryForeground
+            BadgeTheme.Color.Red    -> Palette.White
+            BadgeTheme.Color.Yellow -> Palette.White
+            BadgeTheme.Color.Light  -> Palette.Gray.Gray800
         }
     }
 }
 
-private fun getStrokeColor(type: Type, color: Color): ComposeColor {
+@Composable
+@ReadOnlyComposable
+private fun getStrokeColor(type: BadgeTheme.Type, color: BadgeTheme.Color): ComposeColor {
     return when (type) {
-        Type.White    -> Colors.Theme.Layer.LayerBorder
+        BadgeTheme.Type.White    -> PrelineTheme.colors.layerBorder
 
-        Type.Outlined -> when (color) {
-            Color.White  -> Colors.Theme.Layer.LayerBorder
-            Color.Dark   -> Colors.Theme.Border.Border8
-            Color.Gray   -> Colors.Theme.Border.Border5
-            Color.Green  -> Colors.Teal.Teal500
-            Color.Blue   -> Colors.Theme.Default.Primary
-            Color.Red    -> Colors.Red.Red500
-            Color.Yellow -> Colors.Yellow.Yellow500
-            Color.Light  -> Colors.White.White20
+        BadgeTheme.Type.Outlined -> when (color) {
+            BadgeTheme.Color.White  -> PrelineTheme.colors.layerBorder
+            BadgeTheme.Color.Dark   -> PrelineTheme.colors.borderLine8
+            BadgeTheme.Color.Gray   -> PrelineTheme.colors.borderLine5
+            BadgeTheme.Color.Green  -> PrelineTheme.colors.green.solid
+            BadgeTheme.Color.Blue   -> PrelineTheme.colors.primary
+            BadgeTheme.Color.Red    -> PrelineTheme.colors.red.solid
+            BadgeTheme.Color.Yellow -> PrelineTheme.colors.yellow.solid
+            BadgeTheme.Color.Light  -> Palette.White20
         }
 
-        Type.Soft     -> when (color) {
-            Color.White  -> Colors.Theme.Layer.LayerBorder
-            Color.Dark   -> Colors.Transparent
-            Color.Gray   -> Colors.Transparent
-            Color.Green  -> Colors.Transparent
-            Color.Blue   -> Colors.Transparent
-            Color.Red    -> Colors.Transparent
-            Color.Yellow -> Colors.Transparent
-            Color.Light  -> Colors.Transparent
+        BadgeTheme.Type.Soft     -> when (color) {
+            BadgeTheme.Color.White  -> PrelineTheme.colors.layerBorder
+            BadgeTheme.Color.Dark   -> Palette.Transparent
+            BadgeTheme.Color.Gray   -> Palette.Transparent
+            BadgeTheme.Color.Green  -> Palette.Transparent
+            BadgeTheme.Color.Blue   -> Palette.Transparent
+            BadgeTheme.Color.Red    -> Palette.Transparent
+            BadgeTheme.Color.Yellow -> Palette.Transparent
+            BadgeTheme.Color.Light  -> Palette.Transparent
         }
 
-        Type.Solid    -> when (color) {
-            Color.White  -> Colors.Theme.Layer.LayerBorder
-            Color.Dark   -> Colors.Transparent
-            Color.Gray   -> Colors.Transparent
-            Color.Green  -> Colors.Transparent
-            Color.Blue   -> Colors.Transparent
-            Color.Red    -> Colors.Transparent
-            Color.Yellow -> Colors.Transparent
-            Color.Light  -> Colors.Transparent
+        BadgeTheme.Type.Solid    -> when (color) {
+            BadgeTheme.Color.White  -> PrelineTheme.colors.layerBorder
+            BadgeTheme.Color.Dark   -> Palette.Transparent
+            BadgeTheme.Color.Gray   -> Palette.Transparent
+            BadgeTheme.Color.Green  -> Palette.Transparent
+            BadgeTheme.Color.Blue   -> Palette.Transparent
+            BadgeTheme.Color.Red    -> Palette.Transparent
+            BadgeTheme.Color.Yellow -> Palette.Transparent
+            BadgeTheme.Color.Light  -> Palette.Transparent
         }
     }
 }
 
-private fun getCloseIconBackgroundColor(type: Type, color: Color): ComposeColor {
+@Composable
+@ReadOnlyComposable
+private fun getCloseIconBackgroundColor(type: BadgeTheme.Type, color: BadgeTheme.Color): ComposeColor {
     return when (type) {
-        Type.White    -> Colors.Theme.Surface.Surface1
+        BadgeTheme.Type.White    -> PrelineTheme.colors.surface1
 
-        Type.Outlined -> when (color) {
-            Color.White  -> Colors.Theme.Surface.Surface1
-            Color.Dark   -> Colors.Theme.Surface.Surface1
-            Color.Gray   -> Colors.Theme.Surface.Surface1
-            Color.Green  -> Colors.Theme.Accent.Green.Green3
-            Color.Blue   -> Colors.Theme.Accent.Primary.Primary3
-            Color.Red    -> Colors.Theme.Accent.Red.Red3
-            Color.Yellow -> Colors.Theme.Accent.Yellow.Yellow3
-            Color.Light  -> Colors.White.White10
+        BadgeTheme.Type.Outlined -> when (color) {
+            BadgeTheme.Color.White  -> PrelineTheme.colors.surface1
+            BadgeTheme.Color.Dark   -> PrelineTheme.colors.surface1
+            BadgeTheme.Color.Gray   -> PrelineTheme.colors.surface1
+            BadgeTheme.Color.Green  -> PrelineTheme.colors.green.soft
+            BadgeTheme.Color.Blue   -> PrelineTheme.colors.blue.soft
+            BadgeTheme.Color.Red    -> PrelineTheme.colors.red.soft
+            BadgeTheme.Color.Yellow -> PrelineTheme.colors.yellow.soft
+            BadgeTheme.Color.Light  -> Palette.White10
         }
 
-        Type.Soft     -> when (color) {
-            Color.White  -> Colors.Theme.Surface.Surface1
-            Color.Dark   -> Colors.Theme.Surface.Surface
-            Color.Gray   -> Colors.Theme.Surface.Surface1
-            Color.Green  -> Colors.Theme.Accent.Green.Green6
-            Color.Blue   -> Colors.Theme.Accent.Primary.Primary6
-            Color.Red    -> Colors.Theme.Accent.Red.Red6
-            Color.Yellow -> Colors.Theme.Accent.Yellow.Yellow6
-            Color.Light  -> Colors.White.White10
+        BadgeTheme.Type.Soft     -> when (color) {
+            BadgeTheme.Color.White  -> PrelineTheme.colors.surface1
+            BadgeTheme.Color.Dark   -> PrelineTheme.colors.surface
+            BadgeTheme.Color.Gray   -> PrelineTheme.colors.surface1
+            BadgeTheme.Color.Green  -> PrelineTheme.colors.green.softHover
+            BadgeTheme.Color.Blue   -> PrelineTheme.colors.blue.softHover
+            BadgeTheme.Color.Red    -> PrelineTheme.colors.red.softHover
+            BadgeTheme.Color.Yellow -> PrelineTheme.colors.yellow.softHover
+            BadgeTheme.Color.Light  -> Palette.White10
         }
 
-        Type.Solid    -> when (color) {
-            Color.White  -> Colors.Theme.Surface.Surface1
-            Color.Dark   -> Colors.Theme.Background.Background
-            Color.Gray   -> Colors.Theme.Surface.Surface3
-            Color.Green  -> Colors.Solid.GreenCloseIcon
-            Color.Blue   -> Colors.Solid.BlueCloseIcon
-            Color.Red    -> Colors.Solid.RedCloseIcon
-            Color.Yellow -> Colors.Solid.YellowCloseIcon
-            Color.Light  -> Colors.Theme.Background.BackgroundInverse
+        BadgeTheme.Type.Solid    -> when (color) {
+            BadgeTheme.Color.White  -> PrelineTheme.colors.surface1
+            BadgeTheme.Color.Dark   -> PrelineTheme.colors.background
+            BadgeTheme.Color.Gray   -> PrelineTheme.colors.surface3
+            BadgeTheme.Color.Green  -> Palette.White20
+            BadgeTheme.Color.Blue   -> Palette.White20
+            BadgeTheme.Color.Red    -> Palette.White20
+            BadgeTheme.Color.Yellow -> Palette.White20
+            BadgeTheme.Color.Light  -> Palette.Gray.Gray800
         }
     }
 }
 
-private fun getCloseIconForegroundColor(type: Type, color: Color): ComposeColor {
+@Composable
+@ReadOnlyComposable
+private fun getCloseIconForegroundColor(type: BadgeTheme.Type, color: BadgeTheme.Color): ComposeColor {
     return when (type) {
-        Type.White    -> Colors.Theme.Surface.SurfaceForeground
+        BadgeTheme.Type.White    -> PrelineTheme.colors.surfaceForeground
 
-        Type.Outlined -> when (color) {
-            Color.White  -> Colors.Theme.Surface.SurfaceForeground
-            Color.Dark   -> Colors.Theme.Surface.SurfaceForeground
-            Color.Gray   -> Colors.Theme.Surface.SurfaceForeground
-            Color.Green  -> Colors.Theme.Accent.Green.Green7
-            Color.Blue   -> Colors.Theme.Accent.Primary.Primary7
-            Color.Red    -> Colors.Theme.Accent.Red.Red7
-            Color.Yellow -> Colors.Theme.Accent.Yellow.Yellow7
-            Color.Light  -> Colors.Theme.Foreground.ForegroundInverse
+        BadgeTheme.Type.Outlined -> when (color) {
+            BadgeTheme.Color.White  -> PrelineTheme.colors.surfaceForeground
+            BadgeTheme.Color.Dark   -> PrelineTheme.colors.surfaceForeground
+            BadgeTheme.Color.Gray   -> PrelineTheme.colors.surfaceForeground
+            BadgeTheme.Color.Green  -> PrelineTheme.colors.green.softForeground
+            BadgeTheme.Color.Blue   -> PrelineTheme.colors.blue.softForeground
+            BadgeTheme.Color.Red    -> PrelineTheme.colors.red.softForeground
+            BadgeTheme.Color.Yellow -> PrelineTheme.colors.yellow.softForeground
+            BadgeTheme.Color.Light  -> Palette.White
         }
 
-        Type.Soft     -> when (color) {
-            Color.White  -> Colors.Theme.Surface.SurfaceForeground
-            Color.Dark   -> Colors.Theme.Surface.SurfaceForeground
-            Color.Gray   -> Colors.Theme.Surface.SurfaceForeground
-            Color.Green  -> Colors.Theme.Accent.Green.Green7
-            Color.Blue   -> Colors.Theme.Accent.Primary.Primary7
-            Color.Red    -> Colors.Theme.Accent.Red.Red7
-            Color.Yellow -> Colors.Theme.Accent.Yellow.Yellow7
-            Color.Light  -> Colors.Theme.Foreground.ForegroundInverse
+        BadgeTheme.Type.Soft     -> when (color) {
+            BadgeTheme.Color.White  -> PrelineTheme.colors.surfaceForeground
+            BadgeTheme.Color.Dark   -> PrelineTheme.colors.surfaceForeground
+            BadgeTheme.Color.Gray   -> PrelineTheme.colors.surfaceForeground
+            BadgeTheme.Color.Green  -> PrelineTheme.colors.green.softForeground
+            BadgeTheme.Color.Blue   -> PrelineTheme.colors.blue.softForeground
+            BadgeTheme.Color.Red    -> PrelineTheme.colors.red.softForeground
+            BadgeTheme.Color.Yellow -> PrelineTheme.colors.yellow.softForeground
+            BadgeTheme.Color.Light  -> Palette.White
         }
 
-        Type.Solid    -> when (color) {
-            Color.White  -> Colors.Theme.Surface.SurfaceForeground
-            Color.Dark   -> Colors.Theme.Foreground.Foreground
-            Color.Gray   -> Colors.Theme.Foreground.ForegroundInverse
-            Color.Green  -> Colors.Theme.Foreground.ForegroundInverse
-            Color.Blue   -> Colors.Theme.Default.PrimaryForeground
-            Color.Red    -> Colors.Theme.Foreground.ForegroundInverse
-            Color.Yellow -> Colors.Theme.Foreground.ForegroundInverse
-            Color.Light  -> Colors.Theme.Foreground.ForegroundInverse
+        BadgeTheme.Type.Solid    -> when (color) {
+            BadgeTheme.Color.White  -> PrelineTheme.colors.surfaceForeground
+            BadgeTheme.Color.Dark   -> PrelineTheme.colors.foreground
+            BadgeTheme.Color.Gray   -> Palette.White
+            BadgeTheme.Color.Green  -> Palette.White
+            BadgeTheme.Color.Blue   -> PrelineTheme.colors.primaryForeground
+            BadgeTheme.Color.Red    -> Palette.White
+            BadgeTheme.Color.Yellow -> Palette.White
+            BadgeTheme.Color.Light  -> Palette.White
         }
     }
 }
 
-private fun getContainerPadding(size: Size, horizontal: Boolean): Dp = when (size) {
-    Size.Large   -> if (horizontal) 16.dp else 12.dp
-    Size.Default -> if (horizontal) 12.dp else 8.dp
-    Size.Small   -> if (horizontal) 8.dp else 4.dp
+private fun getHeight(size: BadgeTheme.Size): Dp = when (size) {
+    BadgeTheme.Size.Large   -> 38.dp
+    BadgeTheme.Size.Default -> 28.dp
+    BadgeTheme.Size.Small   -> 18.dp
 }
 
-private fun getAvatarSize(size: Size): Dp = when (size) {
-    Size.Large, Size.Default -> 16.dp
-    Size.Small               -> 14.dp
+private fun getContainerPadding(size: BadgeTheme.Size, horizontal: Boolean): Dp = when (size) {
+    BadgeTheme.Size.Large   -> if (horizontal) 16.dp else 12.dp
+    BadgeTheme.Size.Default -> if (horizontal) 10.dp else 6.dp
+    BadgeTheme.Size.Small   -> if (horizontal) 6.dp else 2.dp
 }
 
-private fun getLeadingIconSize(size: Size): Dp = when (size) {
-    Size.Large   -> 14.dp
-    Size.Default -> 12.dp
-    Size.Small   -> 10.dp
+private fun getAvatarSize(size: BadgeTheme.Size): Dp = when (size) {
+    BadgeTheme.Size.Large, BadgeTheme.Size.Default -> 16.dp
+    BadgeTheme.Size.Small                          -> 14.dp
 }
 
-private fun getTrailingIconSize(size: Size): Dp = when (size) {
-    Size.Large   -> 14.dp
-    Size.Default -> 12.dp
-    Size.Small   -> 10.dp
+private fun getLeadingIconSize(size: BadgeTheme.Size): Dp = when (size) {
+    BadgeTheme.Size.Large   -> 14.dp
+    BadgeTheme.Size.Default -> 12.dp
+    BadgeTheme.Size.Small   -> 10.dp
 }
 
-private fun getCloseIconSize(size: Size): Dp = when (size) {
-    Size.Large   -> 16.dp
-    Size.Default -> 14.dp
-    Size.Small   -> 12.dp
+private fun getTrailingIconSize(size: BadgeTheme.Size): Dp = when (size) {
+    BadgeTheme.Size.Large   -> 14.dp
+    BadgeTheme.Size.Default -> 12.dp
+    BadgeTheme.Size.Small   -> 10.dp
 }
 
-private fun getShape(shape: Shape): ComposeShape = when (shape) {
-    Shape.Rounded -> RoundedCornerShape(6.dp)
-    Shape.Pilled  -> CircleShape
+private fun getCloseIconSize(size: BadgeTheme.Size): Dp = when (size) {
+    BadgeTheme.Size.Large   -> 16.dp
+    BadgeTheme.Size.Default -> 14.dp
+    BadgeTheme.Size.Small   -> 12.dp
+}
+
+private fun getShape(shape: BadgeTheme.Shape): ComposeShape = when (shape) {
+    BadgeTheme.Shape.Rounded -> RoundedCornerShape(6.dp)
+    BadgeTheme.Shape.Pilled  -> CircleShape
 }

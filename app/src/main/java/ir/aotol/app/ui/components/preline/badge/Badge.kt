@@ -2,6 +2,8 @@ package ir.aotol.app.ui.components.preline.badge
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,20 +15,17 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import ir.aotol.app.R
-import ir.aotol.app.helperes.invisibleClickable
-import ir.aotol.app.ui.components.preline.badge.BadgeTheme.Color
-import ir.aotol.app.ui.components.preline.badge.BadgeTheme.Shape
-import ir.aotol.app.ui.components.preline.badge.BadgeTheme.Size
-import ir.aotol.app.ui.components.preline.badge.BadgeTheme.Type
+import ir.aotol.app.ui.components.preline.PrelineTheme
+import ir.aotol.app.ui.components.preline.medium
 
 @Composable
 fun Badge(
@@ -36,17 +35,19 @@ fun Badge(
     status: Boolean = false,
     placeholder: String? = null,
     trailingIcon: Painter? = null,
-    type: Type = Type.Soft,
-    color: Color = Color.Green,
-    size: Size = Size.Default,
-    shape: Shape = Shape.Rounded,
+    type: BadgeTheme.Type = BadgeTheme.Type.Soft,
+    color: BadgeTheme.Color = BadgeTheme.Color.Green,
+    size: BadgeTheme.Size = BadgeTheme.Size.Default,
+    shape: BadgeTheme.Shape = BadgeTheme.Shape.Rounded,
     onCloseClick: (() -> Unit)? = null,
     onClick: (() -> Unit)? = null,
 ) {
     val theme = getTheme(type, color, size, shape)
 
     Card(
-        modifier = modifier.then(onClick?.let { Modifier.invisibleClickable { it() } } ?: Modifier),
+        modifier = modifier
+            .size(width = Dp.Unspecified, height = theme.height)
+            .then(onClick?.let { Modifier.clickable { it() } } ?: Modifier),
         colors = CardDefaults.cardColors(theme.background),
         border = BorderStroke(1.dp, theme.stroke),
         elevation = CardDefaults.cardElevation(0.dp),
@@ -86,7 +87,7 @@ fun Badge(
 
             if (status) {
                 Icon(
-                    painter = painterResource(R.drawable.aotol),
+                    painter = painterResource(R.drawable.ic_circle),
                     contentDescription = null,
                     modifier = Modifier.size(8.dp),
                     tint = theme.foregroundColor
@@ -97,8 +98,7 @@ fun Badge(
                 Text(
                     text = label,
                     color = theme.foregroundColor,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium
+                    style = PrelineTheme.typography.xs.medium,
                 )
             }
 
@@ -115,13 +115,13 @@ fun Badge(
                 Card(
                     modifier = Modifier
                         .size(theme.closeIconSize)
-                        .invisibleClickable { it() },
+                        .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) { it() },
                     shape = CircleShape,
                     elevation = CardDefaults.cardElevation(0.dp),
                     colors = CardDefaults.cardColors(theme.closeIconBackground),
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.aotol),
+                        painter = painterResource(R.drawable.ic_clear),
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxSize()
@@ -147,7 +147,7 @@ private fun BadgePlaceholder() {
 private fun BadgeAvatarPlaceholder() {
     Badge(
         placeholder = "Badge",
-        avatar = painterResource(R.drawable.aotol)
+        avatar = painterResource(R.mipmap.ic_launcher)
     )
 }
 
@@ -156,7 +156,7 @@ private fun BadgeAvatarPlaceholder() {
 private fun BadgePlaceholderLeadingIcon() {
     Badge(
         placeholder = "Badge",
-        leadingIcon = painterResource(R.drawable.aotol)
+        leadingIcon = painterResource(R.drawable.ic_home)
     )
 }
 
@@ -165,7 +165,7 @@ private fun BadgePlaceholderLeadingIcon() {
 private fun BadgePlaceholderTrailingIcon() {
     Badge(
         placeholder = "Badge",
-        trailingIcon = painterResource(R.drawable.aotol)
+        trailingIcon = painterResource(R.drawable.ic_home)
     )
 }
 
