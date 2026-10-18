@@ -37,6 +37,7 @@ import ir.aotol.app.ui.components.preline.PrelineTheme
 import ir.aotol.app.ui.components.preline.accordion.data.AccordionBadge
 import ir.aotol.app.ui.components.preline.accordion.data.AccordionItem
 import ir.aotol.app.ui.components.preline.badge.Badge
+import ir.aotol.app.ui.theme.Colors
 
 @Composable
 fun Accordion(
@@ -132,6 +133,17 @@ private fun ItemView(item: AccordionItem, toggle: AccordionTheme.Toggle, theme: 
                 )
 
                 else                             -> {}
+            }
+
+            item.icon?.let {
+                Icon(
+                    painter = it,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .size(16.dp),
+                    tint = Colors.Foreground.Icon
+                )
             }
 
             Text(

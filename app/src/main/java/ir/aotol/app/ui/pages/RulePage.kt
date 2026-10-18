@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
@@ -30,13 +29,14 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ir.aotol.app.R
 import ir.aotol.app.ui.components.page_title.PageTitle
-import ir.aotol.app.ui.components.page_title.data.NavigationItem
+import ir.aotol.app.ui.components.preline.AotolTheme
 import ir.aotol.app.ui.components.preline.accordion.Accordion
 import ir.aotol.app.ui.components.preline.accordion.AccordionTheme
 import ir.aotol.app.ui.components.preline.accordion.data.AccordionItem
+import ir.aotol.app.ui.components.preline.badge.Badge
+import ir.aotol.app.ui.components.preline.badge.BadgeTheme
 import ir.aotol.app.ui.components.preline.button.Button
 import ir.aotol.app.ui.components.preline.button.ButtonTheme
-import ir.aotol.app.ui.components.preline.AotolTheme
 import ir.aotol.app.ui.theme.Colors
 
 @Composable
@@ -149,91 +149,18 @@ fun RulePage(navController: NavController) {
                             modifier = Modifier.fillMaxWidth(),
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            PageTitle("قوانین و شرایط استفاده", NavigationItem(painterResource(R.drawable.ic_chevron_back)) { navController.popBackStack() })
-                            Card(
-                                modifier = Modifier
-                                    .size(height = 30.dp, width = 160.dp)
-                                    .align(Alignment.CenterHorizontally),
-                                colors = CardDefaults.cardColors(Colors.Background.Active),
-                                elevation = CardDefaults.cardElevation(0.dp),
-                                shape = CircleShape
-                            ) {
-                                Row(
-                                    modifier = Modifier.fillMaxSize(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.ic_rules),
-                                        contentDescription = null,
-                                        tint = Colors.Foreground.Focus,
-                                        modifier = Modifier.size(14.dp)
-                                    )
-                                    Spacer(Modifier.width(6.dp))
-                                    Text(
-                                        text = "نسخه ۱٫۰ · مرداد ۱۴۰۵",
-                                        color = Colors.Foreground.Focus,
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.SemiBold,
-                                    )
-                                }
-                            }
-                            Column(modifier = Modifier.fillMaxWidth()) {
-                                Text(
-                                    text = "۱. پذیرش شرایط",
-                                    color = Colors.Text.Normal,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                                Text(
-                                    text = "استفاده از اپلیکیشن به منزله پذیرش این شرایط است. در صورت عدم موافقت، امکان استفاده از خدمات وجود ندارد.",
-                                    color = Colors.Text.Label,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Normal,
-                                )
-                            }
-                            Column(modifier = Modifier.fillMaxWidth()) {
-                                Text(
-                                    text = "۲. تعهدات کاربر",
-                                    color = Colors.Text.Normal,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                                Text(
-                                    text = "کاربر متعهد است اطلاعات صحیح ثبت کند و از حساب خود برای فعالیت های غیرقانونی یا آسیب به دیگران استفاده نکند.",
-                                    color = Colors.Text.Label,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Normal,
-                                )
-                            }
-                            Column(modifier = Modifier.fillMaxWidth()) {
-                                Text(
-                                    text = "۳. خدمات",
-                                    color = Colors.Text.Normal,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                                Text(
-                                    text = "خدمات شامل مدیریت خودرو، یادآوری سرویس و درخواست امداد است و ممکن است به مرور تغییر کند.",
-                                    color = Colors.Text.Label,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Normal,
-                                )
-                            }
-                            Column(modifier = Modifier.fillMaxWidth()) {
-                                Text(
-                                    text = "۴. تغییرات قوانین",
-                                    color = Colors.Text.Normal,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                                Text(
-                                    text = "در صورت تغییر اساسی قوانین، از طریق اعلان اطلاع رسانی شده و در صورت لزوم، پذیرش مجدد از شما درخواست می شود.",
-                                    color = Colors.Text.Label,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Normal,
-                                )
-                            }
+                            Badge(
+                                modifier = Modifier.align(Alignment.CenterHorizontally),
+                                leadingIcon = painterResource(R.drawable.ic_rules),
+                                placeholder = "نسخه ۱٫۰ · مرداد ۱۴۰۵",
+                                color = BadgeTheme.Color.Blue,
+                                type = BadgeTheme.Type.Soft,
+                                shape = BadgeTheme.Shape.Pilled
+                            )
+                            TitleAndDescription("۱. پذیرش شرایط", "استفاده از اپلیکیشن به منزله پذیرش این شرایط است. در صورت عدم موافقت، امکان استفاده از خدمات وجود ندارد.")
+                            TitleAndDescription("۲. تعهدات کاربر", "کاربر متعهد است اطلاعات صحیح ثبت کند و از حساب خود برای فعالیت های غیرقانونی یا آسیب به دیگران استفاده نکند.")
+                            TitleAndDescription("۳. خدمات", "خدمات شامل مدیریت خودرو، یادآوری سرویس و درخواست امداد است و ممکن است به مرور تغییر کند.")
+                            TitleAndDescription("۴. تغییرات قوانین", "در صورت تغییر اساسی قوانین، از طریق اعلان اطلاع رسانی شده و در صورت لزوم، پذیرش مجدد از شما درخواست می شود.")
                         }
                     },
                     AccordionItem(title = "سیاست حریم خصوصی", icon = painterResource(R.drawable.ic_shield)) {
@@ -241,91 +168,18 @@ fun RulePage(navController: NavController) {
                             modifier = Modifier.fillMaxWidth(),
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            PageTitle("سیاست حریم خصوصی", NavigationItem(painterResource(R.drawable.ic_chevron_back)) { navController.popBackStack() })
-                            Card(
-                                modifier = Modifier
-                                    .size(height = 30.dp, width = 160.dp)
-                                    .align(Alignment.CenterHorizontally),
-                                colors = CardDefaults.cardColors(Colors.Background.Active),
-                                elevation = CardDefaults.cardElevation(0.dp),
-                                shape = CircleShape
-                            ) {
-                                Row(
-                                    modifier = Modifier.fillMaxSize(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.ic_rules),
-                                        contentDescription = null,
-                                        tint = Colors.Foreground.Focus,
-                                        modifier = Modifier.size(14.dp)
-                                    )
-                                    Spacer(Modifier.width(6.dp))
-                                    Text(
-                                        text = "نسخه ۱٫۰ · مرداد ۱۴۰۵",
-                                        color = Colors.Foreground.Focus,
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.SemiBold,
-                                    )
-                                }
-                            }
-                            Column(modifier = Modifier.fillMaxWidth()) {
-                                Text(
-                                    text = "۱. اطلاعات جمع آوری شده",
-                                    color = Colors.Text.Normal,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                                Text(
-                                    text = "شماره موبایل، نام، اطلاعات خودرو، سوابق سرویس و اطلاعات دستگاه (مدل، سیستم عامل و نسخه اپ).",
-                                    color = Colors.Text.Label,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Normal,
-                                )
-                            }
-                            Column(modifier = Modifier.fillMaxWidth()) {
-                                Text(
-                                    text = "۲. نحوه استفاده",
-                                    color = Colors.Text.Normal,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                                Text(
-                                    text = "اطلاعات صرفاً برای ارائه خدمات، امنیت حساب و اطلاع رسانی استفاده می شود و بدون رضایت شما در اختیار اشخاص ثالث قرار نمی گیرد.",
-                                    color = Colors.Text.Label,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Normal,
-                                )
-                            }
-                            Column(modifier = Modifier.fillMaxWidth()) {
-                                Text(
-                                    text = "۳. نگهداری و امنیت",
-                                    color = Colors.Text.Normal,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                                Text(
-                                    text = "اطلاعات روی بستر امن و رمزنگاری شده نگهداری می شود و دسترسی به آن محدود و ثبت شده است.",
-                                    color = Colors.Text.Label,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Normal,
-                                )
-                            }
-                            Column(modifier = Modifier.fillMaxWidth()) {
-                                Text(
-                                    text = "۴. حقوق کاربر",
-                                    color = Colors.Text.Normal,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                                Text(
-                                    text = "شما می توانید در هر زمان از بخش پروفایل، حساب کاربری خود و اطلاعات مرتبط با آن را حذف کنید.",
-                                    color = Colors.Text.Label,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Normal,
-                                )
-                            }
+                            Badge(
+                                modifier = Modifier.align(Alignment.CenterHorizontally),
+                                leadingIcon = painterResource(R.drawable.ic_shield),
+                                placeholder = "نسخه ۱٫۰ · مرداد ۱۴۰۵",
+                                color = BadgeTheme.Color.Blue,
+                                type = BadgeTheme.Type.Soft,
+                                shape = BadgeTheme.Shape.Pilled
+                            )
+                            TitleAndDescription("۱. اطلاعات جمع آوری شده", "شماره موبایل، نام، اطلاعات خودرو، سوابق سرویس و اطلاعات دستگاه (مدل، سیستم عامل و نسخه اپ).")
+                            TitleAndDescription("۲. نحوه استفاده", "اطلاعات صرفاً برای ارائه خدمات، امنیت حساب و اطلاع رسانی استفاده می شود و بدون رضایت شما در اختیار اشخاص ثالث قرار نمی گیرد.")
+                            TitleAndDescription("۳. نگهداری و امنیت", "اطلاعات روی بستر امن و رمزنگاری شده نگهداری می شود و دسترسی به آن محدود و ثبت شده است.")
+                            TitleAndDescription("۴. حقوق کاربر", "شما می توانید در هر زمان از بخش پروفایل، حساب کاربری خود و اطلاعات مرتبط با آن را حذف کنید.")
                         }
                     },
                 ),
@@ -342,6 +196,24 @@ fun RulePage(navController: NavController) {
             placeholder = "تأیید و ادامه",
             color = ButtonTheme.Color.Blue
         ) { }
+    }
+}
+
+@Composable
+private fun TitleAndDescription(title: String, description: String) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = title,
+            color = Colors.Text.Normal,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+        )
+        Text(
+            text = description,
+            color = Colors.Text.Label,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Normal,
+        )
     }
 }
 

@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import ir.aotol.app.App
 import ir.aotol.app.R
 import ir.aotol.app.ui.components.preline.AotolTheme
 import ir.aotol.app.ui.components.preline.alert.Alert
@@ -110,13 +111,18 @@ fun LoginPage(navController: NavController) {
             )
             Spacer(Modifier.weight(1f))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(
-                    label = "",
-                    type = CheckboxTheme.Type.Solid,
-                    size = CheckboxTheme.Size.Large,
-                    checked = isRulesAccepted.value,
-                    onCheckedChange = { isRulesAccepted.value = !isRulesAccepted.value }
-                )
+                Box(
+                    Modifier.size(24.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Checkbox(
+                        label = "",
+                        type = CheckboxTheme.Type.Solid,
+                        size = CheckboxTheme.Size.Large,
+                        checked = isRulesAccepted.value,
+                        onCheckedChange = { isRulesAccepted.value = !isRulesAccepted.value }
+                    )
+                }
                 Spacer(Modifier.width(8.dp))
                 Text(
                     text = "قوانین و مقررات ",
@@ -142,7 +148,7 @@ fun LoginPage(navController: NavController) {
                 if (!isRulesAccepted.value) {
                     bottomSheetState.value = true
                 } else {
-
+                    
                 }
             }
         }
@@ -190,20 +196,23 @@ fun LoginPage(navController: NavController) {
                         fontWeight = FontWeight.Normal,
                     )
                     Row(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(24.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Button(
                             modifier = Modifier.weight(1f),
                             placeholder = "خروج",
-                            color = ButtonTheme.Color.Blue
-                        ) { }
+                            style = ButtonTheme.Style.Outlined,
+                            color = ButtonTheme.Color.Gray
+                        ) { bottomSheetState.value = false }
+                        Spacer(Modifier.width(16.dp))
                         Button(
                             modifier = Modifier.weight(1f),
                             placeholder = "بازگشت",
-                            style = ButtonTheme.Style.Outlined,
-                            color = ButtonTheme.Color.Gray
-                        ) { }
+                            color = ButtonTheme.Color.Blue
+                        ) { App.exit() }
                     }
                 }
             }
