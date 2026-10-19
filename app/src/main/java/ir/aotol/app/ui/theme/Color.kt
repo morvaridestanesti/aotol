@@ -13,6 +13,7 @@ val Pink40 = Color(0xFF7D5260)
 object Colors {
     object Background {
         val Active = Color(0xFFEFF6FF)
+        val Activelight = Color(0xFFF8FBFF)
         val Card = Color(0xFFF9FAFB)
         val Normal = Color(0xFFFFFFFF)
         val Error = Color(0xFFFEF9F9)
@@ -29,6 +30,7 @@ object Colors {
         val Label = Color(0xFF4B5563)
         val Normal = Color(0xFFD1D5DB)
         val Warning = Color(0xFFE1BD6A)
+        val Active = Color(0xFF80A5F4)
     }
 
     object Text {
