@@ -36,6 +36,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":preline"))
     implementation(libs.identity)
     annotationProcessor(libs.androidx.room.compiler)
     debugImplementation(libs.androidx.compose.ui.test.manifest)

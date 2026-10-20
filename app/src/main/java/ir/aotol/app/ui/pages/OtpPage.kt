@@ -26,16 +26,17 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ir.aotol.app.R
-import ir.aotol.app.ui.components.PinView
 import ir.aotol.app.ui.components.page_title.PageTitle
 import ir.aotol.app.ui.components.page_title.data.NavigationItem
+import ir.aotol.app.ui.components.preline.AotolTheme
 import ir.aotol.app.ui.components.preline.alert.Alert
 import ir.aotol.app.ui.components.preline.alert.AlertTheme
 import ir.aotol.app.ui.components.preline.alert.data.AlertButton
 import ir.aotol.app.ui.components.preline.spinner.Spinner
 import ir.aotol.app.ui.components.preline.spinner.SpinnerTheme
-import ir.aotol.app.ui.components.preline.AotolTheme
 import ir.aotol.app.ui.theme.Colors
+import ir.ncis.preline.ui.components.pin_input.PinInput
+import ir.ncis.preline.ui.components.pin_input.PinInputTheme
 
 @Composable
 fun OtpPage(navController: NavController) {
@@ -71,7 +72,7 @@ fun OtpPage(navController: NavController) {
             )
         }
         Spacer(Modifier.height(18.dp))
-        PinView { }
+        PinInput("", {}, Modifier.align(Alignment.CenterHorizontally), 5, aspectRatio = 0.75f, size = PinInputTheme.Size.Large)
         Spacer(Modifier.height(18.dp))
         Alert(
             leadingIcon = painterResource(R.drawable.ic_no_wifi),

@@ -25,3 +25,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Aotol"
 include(":app")
+include(":preline")

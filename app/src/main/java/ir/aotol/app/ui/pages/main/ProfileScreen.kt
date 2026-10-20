@@ -1,7 +1,6 @@
 package ir.aotol.app.ui.pages.main
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,11 +35,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ir.aotol.app.R
+import ir.aotol.app.helpers.invisibleClickable
 import ir.aotol.app.ui.components.page_title.PageTitle
 import ir.aotol.app.ui.components.preline.AotolTheme
-import ir.aotol.app.ui.components.preline.accordion.Accordion
-import ir.aotol.app.ui.components.preline.accordion.AccordionTheme
-import ir.aotol.app.ui.components.preline.accordion.data.AccordionItem
 import ir.aotol.app.ui.components.preline.avatar.Avatar
 import ir.aotol.app.ui.components.preline.avatar.AvatarTheme
 import ir.aotol.app.ui.components.preline.badge.Badge
@@ -48,6 +45,9 @@ import ir.aotol.app.ui.components.preline.badge.BadgeTheme
 import ir.aotol.app.ui.components.preline.button.Button
 import ir.aotol.app.ui.components.preline.button.ButtonTheme
 import ir.aotol.app.ui.theme.Colors
+import ir.ncis.preline.ui.components.accordion.Accordion
+import ir.ncis.preline.ui.components.accordion.AccordionTheme
+import ir.ncis.preline.ui.components.accordion.data.AccordionItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -170,7 +170,7 @@ fun ProfileScreen(navController: NavController) {
                                     tint = Colors.Text.Hint,
                                     modifier = Modifier
                                         .size(16.dp)
-                                        .clickable { bottomSheetState.value = true }
+                                        .invisibleClickable { bottomSheetState.value = true }
                                 )
                                 Spacer(Modifier.width(6.dp))
                                 Text(
@@ -192,10 +192,10 @@ fun ProfileScreen(navController: NavController) {
             }
             Accordion(
                 items = listOf(
-                    AccordionItem(title = "آدرس های من", icon = painterResource(R.drawable.ic_location)) {},
-                    AccordionItem(title = "تغییر شماره موبایل", icon = painterResource(R.drawable.ic_change)) {},
-                    AccordionItem(title = "قوانین و حریم خصوصی", icon = painterResource(R.drawable.ic_rules)) {},
-                    AccordionItem(title = "پشتیبانی", icon = painterResource(R.drawable.ic_support)) {},
+                    AccordionItem(title = "آدرس های من", content = {}, icon = painterResource(R.drawable.ic_location)),
+                    AccordionItem(title = "تغییر شماره موبایل", content = {}, icon = painterResource(R.drawable.ic_change)),
+                    AccordionItem(title = "قوانین و حریم خصوصی", content = {}, icon = painterResource(R.drawable.ic_rules)),
+                    AccordionItem(title = "پشتیبانی", content = {}, icon = painterResource(R.drawable.ic_support)),
                 ),
                 style = AccordionTheme.Style.Bordered,
                 toggle = AccordionTheme.Toggle.EndArrow,
@@ -256,19 +256,14 @@ fun ProfileScreen(navController: NavController) {
                         fontWeight = FontWeight.Normal,
                         textAlign = TextAlign.Center
                     )
-                    Row(
+                    Button(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(24.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Button(
-                            modifier = Modifier.weight(1f),
-                            placeholder = "متوجه شدم",
-                            color = ButtonTheme.Color.Blue,
-                            size = ButtonTheme.Size.Default
-                        ) { }
-                    }
+                            .padding(16.dp),
+                        placeholder = "متوجه شدم",
+                        color = ButtonTheme.Color.Blue,
+                        size = ButtonTheme.Size.Default
+                    ) { }
                 }
             }
         }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="preline_close">بستن</string>
+    <string name="preline_remove">حذف</string>
+    <string name="preline_first_page">صفحه اول</string>
+    <string name="preline_previous_page">صفحه قبل</string>
+    <string name="preline_next_page">صفحه بعد</string>
+    <string name="preline_last_page">صفحه آخر</string>
+    <string name="preline_more">بیشتر</string>
+    <string name="preline_expanded">باز</string>
+    <string name="preline_collapsed">بسته</string>
+    <string name="preline_decrease">کاهش</string>
+    <string name="preline_increase">افزایش</string>
+    <string name="preline_loading">در حال بارگذاری</string>
+    <string name="preline_rating_value" formatted="true">%1$d از %2$d</string>
+</resources>

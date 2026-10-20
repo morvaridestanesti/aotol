@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="preline_close">Close</string>
+    <string name="preline_remove">Remove</string>
+    <string name="preline_first_page">First page</string>
+    <string name="preline_previous_page">Previous page</string>
+    <string name="preline_next_page">Next page</string>
+    <string name="preline_last_page">Last page</string>
+    <string name="preline_more">More</string>
+    <string name="preline_expanded">Expanded</string>
+    <string name="preline_collapsed">Collapsed</string>
+    <string name="preline_decrease">Decrease</string>
+    <string name="preline_increase">Increase</string>
+    <string name="preline_loading">Loading</string>
+    <string name="preline_rating_value" formatted="true">%1$d of %2$d</string>
+</resources>
