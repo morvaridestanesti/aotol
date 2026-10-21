@@ -6,11 +6,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Address(
     @SerialName("id") val id: Int,
-    val name: String,
-    val icon: String,
-    val address: String,
-    val lat: Double?,
-    val lng: Double?,
-    val sort: Int,
-    val is_default: Boolean,
+    @SerialName("name") val name: String,
+    @SerialName("icon") val icon: String,
+    @SerialName("address") val address: String,
+    @SerialName("lat") val lat: Double?,
+    @SerialName("lng") val lng: Double?,
+    @SerialName("sort") val sort: Int,
+    @SerialName("default") val is_default: Boolean,
 )
