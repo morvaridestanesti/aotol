@@ -12,5 +12,5 @@ data class Address(
     @SerialName("lat") val lat: Double?,
     @SerialName("lng") val lng: Double?,
     @SerialName("sort") val sort: Int,
-    @SerialName("default") val is_default: Boolean,
+    @SerialName("default") val isDefault: Boolean,
 )

@@ -210,26 +210,26 @@ object ApiClient {
     fun parseError(response: Response<*>): Exception {
         return try {
             when (response.code()) {
-                403                     -> ApiException(403, "Error")
-                404                     -> ApiException(404, "Error")
-                401, 500, 502, 503, 504 -> ApiException(response.code(), "Error")
+                403                     -> ApiException(403, "Forbidden Access")
+                404                     -> ApiException(404, "Not Found")
+                401, 500, 502, 503, 504 -> ApiException(response.code(), "Server Error")
                 else                    -> parseErrorBody(response)
             }
         } catch (_: Exception) {
-            ApiException(response.code(), "Error")
+            ApiException(response.code(), "Unknown Error")
         }
     }
 
     private fun parseErrorBody(response: Response<*>): Exception {
         val errorJson = response.errorBody()?.string()
         if (errorJson.isNullOrBlank()) {
-            return ApiException(response.code(), "Error")
+            return ApiException(response.code(), "Unknown Error")
         }
 
         return try {
             // Try to parse as ResponseWrapper first
             val wrapper = json.decodeFromString<ResponseWrapper<Nothing>>(errorJson)
-            ApiException(response.code(), wrapper.message ?: "Error")
+            ApiException(response.code(), wrapper.message ?: "Unknown Error")
         } catch (_: Exception) {
             try {
                 // Try to parse as ValidationErrorResponse
@@ -237,7 +237,7 @@ object ApiClient {
                 val firstError = validation.errors.values.firstOrNull()?.firstOrNull()
                 ApiException(response.code(), firstError ?: validation.message)
             } catch (_: Exception) {
-                ApiException(response.code(), "Error")
+                ApiException(response.code(), "Unknown Error")
             }
         }
     }
@@ -258,9 +258,9 @@ object ApiClient {
         } catch (e: ApiException) {
             throw e
         } catch (_: IOException) {
-            throw ApiException(0, "Error", isNoAnswer = true)
+            throw ApiException(0, "Unknown Error", isNoAnswer = true)
         } catch (_: Exception) {
-            throw ApiException(0, "Error")
+            throw ApiException(0, "Unknown Error")
         } finally {
             if (loadingMessage != null) LoadingManager.exitLoading(requestId)
         }

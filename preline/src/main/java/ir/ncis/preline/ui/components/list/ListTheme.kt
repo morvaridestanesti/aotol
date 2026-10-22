@@ -115,7 +115,6 @@ private fun getTextColor(state: ListTheme.State): ComposeColor = when (state) {
     ListTheme.State.Active                            -> PrelineTheme.colors.primary
     ListTheme.State.Default, ListTheme.State.Disabled -> PrelineTheme.colors.foreground
     ListTheme.State.Hover                             -> PrelineTheme.colors.mutedForeground1
-    else                                              -> PrelineTheme.colors.foreground
 }
 
 @Composable

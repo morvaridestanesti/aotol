@@ -2,9 +2,14 @@ package ir.ncis.preline
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,9 +19,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.takahirom.roborazzi.captureRoboImage
 import ir.ncis.preline.ui.components.accordion.Accordion
 import ir.ncis.preline.ui.components.accordion.AccordionTheme
 import ir.ncis.preline.ui.components.accordion.data.AccordionItem
+import ir.ncis.preline.ui.components.advanced_select.AdvancedSelect
+import ir.ncis.preline.ui.components.advanced_select.AdvancedSelectTheme
+import ir.ncis.preline.ui.components.advanced_select.data.SelectOption
 import ir.ncis.preline.ui.components.alert.Alert
 import ir.ncis.preline.ui.components.alert.AlertTheme
 import ir.ncis.preline.ui.components.alert.data.AlertButton
@@ -47,6 +56,11 @@ import ir.ncis.preline.ui.components.chat_bubble.ChatBubble
 import ir.ncis.preline.ui.components.chat_bubble.ChatBubbleTheme
 import ir.ncis.preline.ui.components.chat_bubble.data.ChatBubbleItem
 import ir.ncis.preline.ui.components.checkbox.Checkbox
+import ir.ncis.preline.ui.components.drawer.Drawer
+import ir.ncis.preline.ui.components.drawer.rememberDrawerState
+import ir.ncis.preline.ui.components.header.Header
+import ir.ncis.preline.ui.components.header.HeaderTheme
+import ir.ncis.preline.ui.components.header.data.HeaderItem
 import ir.ncis.preline.ui.components.input.Input
 import ir.ncis.preline.ui.components.input.InputTheme
 import ir.ncis.preline.ui.components.input_group.InputGroup
@@ -69,17 +83,27 @@ import ir.ncis.preline.ui.components.progress.Progress
 import ir.ncis.preline.ui.components.progress.ProgressTheme
 import ir.ncis.preline.ui.components.progress.SignalBars
 import ir.ncis.preline.ui.components.radio.Radio
+import ir.ncis.preline.ui.components.range_slider.RangeSlider
 import ir.ncis.preline.ui.components.rating.EmojiRating
 import ir.ncis.preline.ui.components.rating.Rating
 import ir.ncis.preline.ui.components.rating.ThumbRating
+import ir.ncis.preline.ui.components.sidebar.Sidebar
+import ir.ncis.preline.ui.components.sidebar.SidebarTheme
+import ir.ncis.preline.ui.components.sidebar.data.SidebarAccount
+import ir.ncis.preline.ui.components.sidebar.data.SidebarItem
+import ir.ncis.preline.ui.components.slider.Slider
+import ir.ncis.preline.ui.components.slider.SliderTheme
 import ir.ncis.preline.ui.components.stepper.Stepper
 import ir.ncis.preline.ui.components.stepper.StepperTheme
 import ir.ncis.preline.ui.components.stepper.data.StepperItem
+import ir.ncis.preline.ui.components.strong_password.StrongPassword
+import ir.ncis.preline.ui.components.strong_password.StrongPasswordTheme
 import ir.ncis.preline.ui.components.styled_icon.StyledIcon
 import ir.ncis.preline.ui.components.styled_icon.StyledIconTheme
 import ir.ncis.preline.ui.components.switch.Switch
 import ir.ncis.preline.ui.components.tab.Tab
 import ir.ncis.preline.ui.components.tab.TabTheme
+import ir.ncis.preline.ui.components.tab.data.TabItem
 import ir.ncis.preline.ui.components.table.Table
 import ir.ncis.preline.ui.components.table.TableText
 import ir.ncis.preline.ui.components.table.TableTheme
@@ -90,13 +114,12 @@ import ir.ncis.preline.ui.components.timeline.data.TimelineAuthor
 import ir.ncis.preline.ui.components.timeline.data.TimelineItem
 import ir.ncis.preline.ui.components.tree_view.TreeView
 import ir.ncis.preline.ui.components.tree_view.data.TreeNode
-import ir.ncis.preline.ui.components.tab.data.TabItem
 import ir.ncis.preline.ui.theme.DefaultPrelineTypography
 import ir.ncis.preline.ui.theme.PersianPrelineTypography
 import ir.ncis.preline.ui.theme.PrelineTheme
-import com.github.takahirom.roborazzi.captureRoboImage
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 
@@ -114,6 +137,7 @@ class ComponentScreenshotTest {
 
     private fun snapshot(name: String, content: @Composable () -> Unit) {
         Design.entries.forEach { design ->
+            RuntimeEnvironment.setQualifiers(if (design.persian) "+fa" else "+en")
             captureRoboImage("src/test/screenshots/$name/${design.name}.png") {
                 PrelineTheme(
                     darkTheme = design.dark,
@@ -442,5 +466,74 @@ class ComponentScreenshotTest {
         PinInput(value = "", onValueChange = {}, shape = PinInputTheme.Shape.Light, placeholder = "○")
         PinInput(value = "123", onValueChange = {}, shape = PinInputTheme.Shape.Circle, aspectRatio = 0.75f, mask = true)
         PinInput(value = "1235", onValueChange = {}, invalid = true)
+    }
+
+    @Test
+    fun strongPassword() = snapshot("strong_password") {
+        StrongPassword(value = "Abc123!x", onValueChange = {})
+        StrongPassword(value = "abc12", onValueChange = {}, hints = StrongPasswordTheme.Hints.Inline)
+    }
+
+    @Test
+    fun advancedSelect() = snapshot("advanced_select") {
+        val options = listOf(
+            SelectOption("science", t("Science", "علم"), icon = painterResource(R.drawable.ic_user)),
+            SelectOption("art", t("Art", "هنر"), icon = painterResource(R.drawable.ic_user)),
+        )
+        AdvancedSelect(options = options, selected = emptySet(), onSelectedChange = {}, placeholder = t("Select input", "انتخاب کنید"))
+        AdvancedSelect(options = options, selected = setOf("science"), onSelectedChange = {}, label = t("Choose your interest", "علاقه‌مندی خود را انتخاب کنید"))
+        AdvancedSelect(options = options, selected = setOf("science", "art"), onSelectedChange = {}, multiple = true, display = AdvancedSelectTheme.Display.Badges)
+    }
+
+    @Test
+    fun rangeSlider() = snapshot("range_slider") {
+        RangeSlider(value = 90f, onValueChange = {}, valueRange = 0f..500f)
+        RangeSlider(value = 140f, onValueChange = {}, valueRange = 0f..500f, tooltip = true)
+        RangeSlider(values = 100f..300f, onValuesChange = {}, valueRange = 0f..500f, tooltip = true, labels = 5, minorTicks = 9)
+    }
+
+    @Test
+    fun header() = snapshot("header") {
+        val items = listOf(HeaderItem(t("Home", "خانه")), HeaderItem(t("Work", "کارها"), children = listOf(HeaderItem("A"))), HeaderItem(t("Blog", "وبلاگ")))
+        val logo: @Composable () -> Unit = { Text("preline", color = PrelineTheme.colors.primary) }
+        Header(logo = logo, items = items, selectedIndex = 0, collapseBelow = 0.dp, windowInsets = WindowInsets(0))
+        Header(logo = logo, items = items, type = HeaderTheme.Type.Gray, border = HeaderTheme.Border.Rounded, collapseBelow = 0.dp, windowInsets = WindowInsets(0))
+        Header(logo = logo, items = items, type = HeaderTheme.Type.Inverse, windowInsets = WindowInsets(0))
+    }
+
+    @Test
+    fun sidebar() = snapshot("sidebar") {
+        val items = listOf(
+            SidebarItem("home", t("Dashboard", "داشبورد"), painterResource(R.drawable.ic_user)),
+            SidebarItem("users", t("Users", "کاربران"), painterResource(R.drawable.ic_user), children = listOf(SidebarItem("a", t("Link", "پیوند")))),
+            SidebarItem("account", t("Account", "حساب"), painterResource(R.drawable.ic_user), badge = t("New", "جدید")),
+        )
+        Row(Modifier.height(260.dp)) {
+            Sidebar(items = items, selected = "a", onSelect = {}, width = 200.dp, account = SidebarAccount(t("Mia Hudson", "میا هادسون")))
+            Sidebar(items = items, selected = "home", onSelect = {}, type = SidebarTheme.Type.Inverse, minified = true)
+        }
+    }
+
+    @Test
+    fun drawer() = snapshot("drawer") {
+        Box(Modifier.height(320.dp)) {
+            Drawer(
+                state = rememberDrawerState(initiallyVisible = true),
+                title = t("Offcanvas title", "عنوان کشو"),
+                size = 240.dp,
+                footer = { Button(placeholder = t("Close", "بستن"), style = ButtonTheme.Style.White) {} }
+            ) { Text(t("Some text as placeholder.", "یک متن نمونه."), color = PrelineTheme.colors.foreground) }
+        }
+    }
+
+    @Test
+    fun slider() = snapshot("slider") {
+        val colors = listOf(PrelineTheme.colors.primary, PrelineTheme.colors.green.solid, PrelineTheme.colors.red.solid)
+        Slider(count = 3, arrows = SliderTheme.Arrows.Both, pagination = SliderTheme.Indicator.Outside, fraction = SliderTheme.Indicator.Outside) {
+            Box(Modifier.fillMaxWidth().height(120.dp).background(colors[it]))
+        }
+        Slider(count = 3, slidesPerView = 2, spacing = 8.dp, pagination = SliderTheme.Indicator.Inside, fraction = SliderTheme.Indicator.Inside, arrows = SliderTheme.Arrows.None) {
+            Box(Modifier.fillMaxWidth().height(100.dp).background(colors[it]))
+        }
     }
 }

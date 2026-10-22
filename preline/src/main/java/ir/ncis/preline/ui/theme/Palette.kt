@@ -45,6 +45,7 @@ object Palette {
         val Blue600 = Color(0xFF2563EB)
         val Blue700 = Color(0xFF1D4ED8)
         val Blue800 = Color(0xFF1E40AF)
+        val Blue950 = Color(0xFF172554)
     }
 
     object Teal {

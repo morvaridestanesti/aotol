@@ -8,7 +8,7 @@ coreKtx = "1.19.1"
 foundation = "1.12.1"
 fragment = "1.9.1"
 junit = "4.13.2"
-junitVersion = "1.2.1"
+junitVersion = "1.3.0"
 kotlin = "2.4.21"
 kotlinxSerializationJson = "1.11.0"
 lifecycleRuntimeKtx = "2.11.0"
@@ -19,8 +19,8 @@ playServicesMaps = "20.1.0"
 preferenceKtx = "1.2.1"
 retrofit = "3.0.0"
 retrofit2KotlinxSerializationConverter = "1.0.0"
-robolectric = "4.14.1"
-roborazzi = "1.76.0"
+robolectric = "4.17"
+roborazzi = "1.77.0"
 room = "2.8.5"
 ucrop = "2.2.11"
 uiText = "1.12.1"
@@ -61,8 +61,8 @@ play-services-maps = { module = "com.google.android.gms:play-services-maps", ver
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit2-kotlinx-serialization-converter = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "retrofit2KotlinxSerializationConverter" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
-roborazzi = { module = "io.github.takahirom:roborazzi", version.ref = "roborazzi" }
-roborazzi-compose = { module = "io.github.takahirom:roborazzi-compose", version.ref = "roborazzi" }
+roborazzi = { module = "io.github.takahirom.roborazzi:roborazzi", version.ref = "roborazzi" }
+roborazzi-compose = { module = "io.github.takahirom.roborazzi:roborazzi-compose", version.ref = "roborazzi" }
 ucrop = { module = "com.github.yalantis:ucrop", version.ref = "ucrop" }
 identity = { group = "com.android.identity", name = "identity", version.ref = "identity" }
 

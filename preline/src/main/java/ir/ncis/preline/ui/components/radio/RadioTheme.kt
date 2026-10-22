@@ -86,8 +86,6 @@ private fun getRowPadding(style: RadioTheme.Style, size: RadioTheme.Size) = when
         RadioTheme.Size.Default -> 16.dp
         RadioTheme.Size.Large   -> 22.dp
     }
-
-    else              -> 0.dp
 }
 
 private fun getRadioSize(style: RadioTheme.Style, size: RadioTheme.Size) = when (style) {

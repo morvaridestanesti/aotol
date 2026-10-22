@@ -3,9 +3,23 @@
     <string name="preline_close">بستن</string>
     <string name="preline_remove">حذف</string>
     <string name="preline_first_page">صفحه اول</string>
+    <string name="preline_password_level">سطح:</string>
+    <string name="preline_password_must_contain">رمز عبور شما باید شامل این موارد باشد:</string>
+    <string name="preline_password_min_length" formatted="true">حداقل تعداد نویسه‌ها %1$d است.</string>
+    <string name="preline_password_lowercase">باید حرف کوچک داشته باشد.</string>
+    <string name="preline_password_uppercase">باید حرف بزرگ داشته باشد.</string>
+    <string name="preline_password_numbers">باید عدد داشته باشد.</string>
+    <string name="preline_password_special">باید نویسه خاص داشته باشد.</string>
+    <string name="preline_password_empty">خالی</string>
+    <string name="preline_password_weak">ضعیف</string>
+    <string name="preline_password_medium">متوسط</string>
+    <string name="preline_password_strong">قوی</string>
+    <string name="preline_password_very_strong">خیلی قوی</string>
+    <string name="preline_password_super_strong">بسیار قوی</string>
     <string name="preline_previous_page">صفحه قبل</string>
     <string name="preline_next_page">صفحه بعد</string>
     <string name="preline_last_page">صفحه آخر</string>
+    <string name="preline_menu">منو</string>
     <string name="preline_more">بیشتر</string>
     <string name="preline_expanded">باز</string>
     <string name="preline_collapsed">بسته</string>

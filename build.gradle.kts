@@ -6,3 +6,13 @@ plugins {
     alias(libs.plugins.roborazzi) apply false
     id("com.google.devtools.ksp") version "2.3.6"
 }
+
+allprojects {
+    configurations.all {
+        resolutionStrategy.eachDependency {
+            if (requested.group.startsWith("io.github.takahirom") && requested.version == "1.77.0") {
+                useVersion("1.76.0")
+            }
+        }
+    }
+}

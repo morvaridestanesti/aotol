@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.roborazzi)
     `maven-publish`
 }
 
@@ -22,7 +21,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
     buildFeatures {
-        buildConfig = true
         compose = true
     }
     testOptions {
@@ -41,10 +39,10 @@ dependencies {
     api(platform(libs.androidx.compose.bom))
     api(libs.androidx.compose.material3)
     api(libs.androidx.compose.ui)
+    implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.coil.compose)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-
     testImplementation(libs.androidx.compose.ui.test.junit4)
     testImplementation(libs.junit)
     testImplementation(libs.androidx.junit)
@@ -53,9 +51,7 @@ dependencies {
     testImplementation(libs.roborazzi.compose)
 }
 
-roborazzi {
-    outputDir.set(file("src/test/screenshots"))
-}
+
 
 publishing {
     publications {

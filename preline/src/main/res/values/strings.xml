@@ -3,9 +3,23 @@
     <string name="preline_close">Close</string>
     <string name="preline_remove">Remove</string>
     <string name="preline_first_page">First page</string>
+    <string name="preline_password_level">Level:</string>
+    <string name="preline_password_must_contain">Your password must contain:</string>
+    <string name="preline_password_min_length" formatted="true">Minimum number of characters is %1$d.</string>
+    <string name="preline_password_lowercase">Should contain lowercase.</string>
+    <string name="preline_password_uppercase">Should contain uppercase.</string>
+    <string name="preline_password_numbers">Should contain numbers.</string>
+    <string name="preline_password_special">Should contain special characters.</string>
+    <string name="preline_password_empty">Empty</string>
+    <string name="preline_password_weak">Weak</string>
+    <string name="preline_password_medium">Medium</string>
+    <string name="preline_password_strong">Strong</string>
+    <string name="preline_password_very_strong">Very strong</string>
+    <string name="preline_password_super_strong">Super strong</string>
     <string name="preline_previous_page">Previous page</string>
     <string name="preline_next_page">Next page</string>
     <string name="preline_last_page">Last page</string>
+    <string name="preline_menu">Menu</string>
     <string name="preline_more">More</string>
     <string name="preline_expanded">Expanded</string>
     <string name="preline_collapsed">Collapsed</string>

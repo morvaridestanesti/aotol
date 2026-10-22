@@ -87,7 +87,6 @@ private fun getContainerColor(type: StyledIconTheme.Type, color: StyledIconTheme
             StyledIconTheme.Color.Yellow -> PrelineTheme.colors.yellow.solid
             StyledIconTheme.Color.Light  -> Palette.White
             StyledIconTheme.Color.White  -> PrelineTheme.colors.layer
-            else                         -> Palette.Transparent
         }
 
         StyledIconTheme.Type.Soft         -> when (color) {
@@ -99,7 +98,6 @@ private fun getContainerColor(type: StyledIconTheme.Type, color: StyledIconTheme
             StyledIconTheme.Color.Yellow -> PrelineTheme.colors.yellow.soft
             StyledIconTheme.Color.Light  -> Palette.White10
             StyledIconTheme.Color.White  -> PrelineTheme.colors.layer
-            else                         -> Palette.Transparent
         }
 
         StyledIconTheme.Type.SoftOutlined -> when (color) {
@@ -111,7 +109,6 @@ private fun getContainerColor(type: StyledIconTheme.Type, color: StyledIconTheme
             StyledIconTheme.Color.Yellow -> PrelineTheme.colors.yellow.soft
             StyledIconTheme.Color.Light  -> Palette.White10
             StyledIconTheme.Color.White  -> PrelineTheme.colors.layer
-            else                         -> Palette.Transparent
         }
 
         StyledIconTheme.Type.Outlined     -> when (color) {
@@ -120,7 +117,6 @@ private fun getContainerColor(type: StyledIconTheme.Type, color: StyledIconTheme
         }
 
         StyledIconTheme.Type.White -> PrelineTheme.colors.layer
-        else                       -> Palette.Transparent
     }
 }
 
@@ -142,7 +138,6 @@ private fun getContentColor(type: StyledIconTheme.Type, color: StyledIconTheme.C
             StyledIconTheme.Color.Yellow -> PrelineTheme.colors.yellow.solid
             StyledIconTheme.Color.Light  -> Palette.White
             StyledIconTheme.Color.White  -> PrelineTheme.colors.layer
-            else                         -> Palette.Transparent
         }
 
         StyledIconTheme.Type.Soft         -> when (color) {
@@ -154,7 +149,6 @@ private fun getContentColor(type: StyledIconTheme.Type, color: StyledIconTheme.C
             StyledIconTheme.Color.Yellow -> PrelineTheme.colors.yellow.soft
             StyledIconTheme.Color.Light  -> Palette.White10
             StyledIconTheme.Color.White  -> PrelineTheme.colors.layer
-            else                         -> Palette.Transparent
         }
 
         StyledIconTheme.Type.SoftOutlined -> when (color) {
@@ -166,7 +160,6 @@ private fun getContentColor(type: StyledIconTheme.Type, color: StyledIconTheme.C
             StyledIconTheme.Color.Yellow -> PrelineTheme.colors.yellow.softHover
             StyledIconTheme.Color.Light  -> Palette.Transparent
             StyledIconTheme.Color.White  -> PrelineTheme.colors.layer
-            else                         -> Palette.Transparent
         }
 
         StyledIconTheme.Type.Outlined     -> when (color) {
@@ -175,7 +168,6 @@ private fun getContentColor(type: StyledIconTheme.Type, color: StyledIconTheme.C
         }
 
         StyledIconTheme.Type.White -> PrelineTheme.colors.layer
-        else                       -> Palette.Transparent
     }
 }
 
@@ -192,7 +184,6 @@ private fun getForegroundCol(type: StyledIconTheme.Type, color: StyledIconTheme.
             StyledIconTheme.Color.Yellow -> PrelineTheme.colors.yellow.solid
             StyledIconTheme.Color.Light  -> Palette.White
             StyledIconTheme.Color.White  -> PrelineTheme.colors.layerForeground
-            else                         -> Palette.Transparent
         }
 
         StyledIconTheme.Type.Solid        -> when (color) {
@@ -204,7 +195,6 @@ private fun getForegroundCol(type: StyledIconTheme.Type, color: StyledIconTheme.
             StyledIconTheme.Color.Yellow -> Palette.White
             StyledIconTheme.Color.Light  -> Palette.Gray.Gray800
             StyledIconTheme.Color.White  -> PrelineTheme.colors.layerForeground
-            else                         -> Palette.Transparent
         }
 
         StyledIconTheme.Type.Soft         -> when (color) {
@@ -216,7 +206,6 @@ private fun getForegroundCol(type: StyledIconTheme.Type, color: StyledIconTheme.
             StyledIconTheme.Color.Yellow -> PrelineTheme.colors.yellow.softForeground
             StyledIconTheme.Color.Light  -> Palette.White
             StyledIconTheme.Color.White  -> PrelineTheme.colors.layerForeground
-            else                         -> Palette.Transparent
         }
 
         StyledIconTheme.Type.SoftOutlined -> when (color) {
@@ -228,7 +217,6 @@ private fun getForegroundCol(type: StyledIconTheme.Type, color: StyledIconTheme.
             StyledIconTheme.Color.Yellow -> PrelineTheme.colors.yellow.softForeground
             StyledIconTheme.Color.Light  -> Palette.White
             StyledIconTheme.Color.White  -> PrelineTheme.colors.layerForeground
-            else                         -> Palette.Transparent
         }
 
         StyledIconTheme.Type.Outlined     -> when (color) {
@@ -240,11 +228,9 @@ private fun getForegroundCol(type: StyledIconTheme.Type, color: StyledIconTheme.
             StyledIconTheme.Color.Yellow -> PrelineTheme.colors.yellow.solid
             StyledIconTheme.Color.Light  -> Palette.White
             StyledIconTheme.Color.White  -> PrelineTheme.colors.layerForeground
-            else                         -> Palette.Transparent
         }
 
         StyledIconTheme.Type.White -> PrelineTheme.colors.layerForeground
-        else                       -> Palette.Transparent
     }
 }
 
@@ -261,7 +247,6 @@ private fun getStrokeCol(type: StyledIconTheme.Type, color: StyledIconTheme.Colo
             StyledIconTheme.Color.Yellow -> PrelineTheme.colors.yellow.solid
             StyledIconTheme.Color.Light  -> Palette.White
             StyledIconTheme.Color.White  -> PrelineTheme.colors.layerBorder
-            else                         -> Palette.Transparent
         }
 
         StyledIconTheme.Type.SoftOutlined -> when (color) {
