@@ -29,12 +29,12 @@ import ir.aotol.app.R
 import ir.aotol.app.ui.components.page_title.PageTitle
 import ir.aotol.app.ui.components.page_title.data.NavigationItem
 import ir.aotol.app.ui.components.preline.AotolTheme
-import ir.aotol.app.ui.components.preline.alert.Alert
-import ir.aotol.app.ui.components.preline.alert.AlertTheme
-import ir.aotol.app.ui.components.preline.alert.data.AlertButton
 import ir.aotol.app.ui.components.preline.spinner.Spinner
 import ir.aotol.app.ui.components.preline.spinner.SpinnerTheme
 import ir.aotol.app.ui.theme.Colors
+import ir.ncis.preline.ui.components.alert.Alert
+import ir.ncis.preline.ui.components.alert.AlertTheme
+import ir.ncis.preline.ui.components.alert.data.AlertButton
 import ir.ncis.preline.ui.components.pin_input.PinInput
 import ir.ncis.preline.ui.components.pin_input.PinInputTheme
 

@@ -34,9 +34,6 @@ import androidx.navigation.compose.rememberNavController
 import ir.aotol.app.App
 import ir.aotol.app.R
 import ir.aotol.app.ui.components.preline.AotolTheme
-import ir.aotol.app.ui.components.preline.alert.Alert
-import ir.aotol.app.ui.components.preline.alert.AlertTheme
-import ir.aotol.app.ui.components.preline.alert.data.AlertButton
 import ir.aotol.app.ui.components.preline.avatar.Avatar
 import ir.aotol.app.ui.components.preline.avatar.AvatarTheme
 import ir.aotol.app.ui.components.preline.button.Button
@@ -47,6 +44,9 @@ import ir.aotol.app.ui.components.preline.input.Input
 import ir.aotol.app.ui.components.preline.input.InputTheme
 import ir.aotol.app.ui.components.preline.input.data.InputContent
 import ir.aotol.app.ui.theme.Colors
+import ir.ncis.preline.ui.components.alert.Alert
+import ir.ncis.preline.ui.components.alert.AlertTheme
+import ir.ncis.preline.ui.components.alert.data.AlertButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -148,7 +148,7 @@ fun LoginPage(navController: NavController) {
                 if (!isRulesAccepted.value) {
                     bottomSheetState.value = true
                 } else {
-                    
+
                 }
             }
         }

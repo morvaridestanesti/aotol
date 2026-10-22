@@ -156,8 +156,8 @@ object ApiClient {
         return try {
             val response = runBlocking { createRetrofit(refreshClient, "auth").create(AuthInterface::class.java).refresh(BuildConfig.VERSION_NAME) }
 
-            if (response.isSuccessful && response.body()?.result != null) {
-                val session = response.body()!!.result!!
+            if (response.isSuccessful && response.body()?.data != null) {
+                val session = response.body()!!.data!!
                 SpHelper.put(SpKeys.TOKEN, session.accessToken)
                 SpHelper.put(SpKeys.REFRESH, session.refreshToken)
                 session.accessToken

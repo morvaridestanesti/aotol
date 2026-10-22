@@ -87,8 +87,6 @@ private fun getRowPadding(style: CheckboxTheme.Style, size: CheckboxTheme.Size) 
         CheckboxTheme.Size.Default -> 16.dp
         CheckboxTheme.Size.Large   -> 22.dp
     }
-
-    else              -> 0.dp
 }
 
 private fun getCheckboxSize(style: CheckboxTheme.Style, size: CheckboxTheme.Size) = when (style) {
